@@ -1,0 +1,62 @@
+<style>
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 0.5em; /* Add spacing between stars to prevent overlap */
+    }
+
+    .rating > input {
+        display: none;
+    }
+
+    .rating > label {
+        position: relative;
+        width: 2.5rem; /* fixed width per star to avoid overlap */
+        height: 2.5rem; /* optional to keep consistent */
+        font-size: 2.5rem;
+        color: var(--border-color);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .rating > label::before {
+        content: "\2605"; /* Unicode star */
+        position: relative; /* changed from absolute */
+        opacity: 1;
+    }
+
+    .rating > label:hover:before,
+    .rating > label:hover ~ label:before {
+        color: var(--accent-green);
+        opacity: 0.7;
+    }
+
+    .rating > input:checked ~ label:before {
+        color: var(--accent-green);
+        opacity: 1;
+    }
+</style>
+
+<div class="glass-panel p-6 rounded-lg max-w-2xl mx-auto text-center">
+    <h3 class="text-2xl font-orbitron text-accent-green mb-2">Submit Feedback</h3>
+    <p class="text-text-secondary mb-6">How would you rate your experience?</p>
+    
+    <div id="feedback-status" class="mb-4 text-center"></div>
+
+    <div class="rating mb-4">
+        <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars"></label>
+        <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars"></label>
+        <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars"></label>
+        <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars"></label>
+        <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star"></label>
+    </div>
+
+    <textarea id="feedback-textarea" class="input-field w-full p-3 rounded-md h-32" placeholder="write your thought about yuku protocol!"></textarea>
+    
+    <button id="submit-feedback-btn" class="tactical-btn w-full mt-4 py-3 rounded-md">
+        Submit Feedback
+    </button>
+</div>
