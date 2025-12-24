@@ -1,662 +1,661 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YUKU PROTOCOL :: SYSTEM CORE</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8360942174797973"
-     crossorigin="anonymous"></script>
-    <!-- SheryJS CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/sheryjs/dist/Shery.css" />
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-dark: #030303;
-            --accent-primary: #00ff7f;
-            /* Spring Green */
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-bg: rgba(10, 10, 10, 0.6);
-        }
-        
-        body {
-            background-color: var(--bg-dark);
-            color: #e0e0e0;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            cursor: none;
-            /* SheryJS handles cursor */
-        }
-        
-        .font-orbitron {
-            font-family: 'Orbitron', sans-serif;
-        }
-        
-        /* --- VISUALS --- */
-        .system-grid {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            background-image:
-                linear-gradient(rgba(0, 255, 127, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 127, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
-        }
-        
-        .scanlines {
-            position: fixed;
-            inset: 0;
-            z-index: 999;
-            pointer-events: none;
-            background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, rgba(0, 255, 127, 0.02) 2px, rgba(0, 255, 127, 0.02) 4px);
-        }
-        
-        #webgl-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 1;
-            outline: none;
-        }
-        
-        /* --- INIT OVERLAY --- */
-        #init-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.8s ease-out;
-        }
-        
-        /* --- HUD PANELS --- */
-        .hud-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .hud-panel:hover {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 20px rgba(0, 255, 127, 0.1);
-        }
-        
-        /* Tech Corners */
-        .hud-panel::before,
-        .hud-panel::after {
-            content: '';
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border: 1px solid var(--accent-primary);
-            transition: 0.3s ease;
-            opacity: 0.5;
-        }
-        
-        .hud-panel::before {
-            top: 0;
-            left: 0;
-            border-right: 0;
-            border-bottom: 0;
-        }
-        
-        .hud-panel::after {
-            bottom: 0;
-            right: 0;
-            border-left: 0;
-            border-top: 0;
-        }
-        
-        .section-header {
-            border-left: 4px solid var(--accent-primary);
-            padding-left: 1rem;
-            margin-bottom: 3rem;
-        }
-        
-        #scroll-container {
-            position: relative;
-            z-index: 10;
-            pointer-events: none;
-        }
-        
-        section {
-            pointer-events: auto;
-        }
-        
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #050505;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-primary);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#6200ea">
+<title>Billing App Pro</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  /* --- CSS STYLES (Responsive & Clean) --- */
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Inter', sans-serif; background: #f0f2f5; height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: #1f2937; }
+
+  /* APP BAR */
+  .app-bar { background: #6200ea; color: white; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(98, 0, 234, 0.2); z-index: 50; }
+  .app-bar h1 { font-size: 18px; margin-left: 10px; font-weight: 600; letter-spacing: 0.5px; }
+  .help-btn { background: rgba(255,255,255,0.2); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+  /* CONTENT AREA */
+  .content { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 90px; scroll-behavior: smooth; }
+
+  /* TABS */
+  .tab-view { display: none; animation: fadeIn 0.3s ease; }
+  .tab-view.active { display: block; }
+
+  /* CARDS & INPUTS */
+  .card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid #e5e7eb; }
+  
+  .input-group { margin-bottom: 15px; }
+  label { font-size: 11px; color: #6b7280; margin-bottom: 6px; display: block; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+  input, textarea, select { 
+    width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 10px; 
+    font-size: 15px; background: #f9fafb; font-family: inherit; color: #111; transition: 0.2s;
+  }
+  input:focus, textarea:focus, select:focus { border-color: #6200ea; background: #fff; outline: none; }
+
+  /* BUTTONS */
+  .btn { 
+    background: #6200ea; color: white; border: none; padding: 14px; border-radius: 12px; 
+    font-weight: 600; width: 100%; font-size: 14px; display: flex; justify-content: center; 
+    align-items: center; gap: 8px; cursor: pointer; transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-outline { background: white; color: #6200ea; border: 1px solid #6200ea; }
+  .btn-danger { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
+
+  /* VIEW BTN STYLE */
+  .btn-view {
+    background: #ede9fe; color: #6200ea; border: 1px solid #6200ea;
+    padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: 0.2s;
+  }
+  .btn-view:active { background: #dcd6f7; transform: scale(0.95); }
+
+  /* IMAGE UPLOAD */
+  .file-upload {
+    display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; 
+    background: #ede9fe; color: #6200ea; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; border: 1px dashed #6200ea;
+  }
+  .file-upload input { display: none; }
+
+  /* DATA TABLES (Cart & Inventory) */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+  .data-table th { text-align: left; background: #f3f4f6; padding: 10px; border-radius: 8px 8px 0 0; color: #555; }
+  .data-table td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+  
+  .thumb-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; background: #eee; display:block; }
+
+  /* INVOICE PAPER (PREVIEW TAB) */
+  .paper { 
+    background: white; padding: 20px; font-size: 12px; color: #000; 
+    border-radius: 2px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+    position: relative; border-top: 5px solid #6200ea; margin-bottom: 20px;
+  }
+  
+  .inv-head { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 16px; }
+  
+  /* BILL TABLE (6 COLUMNS) */
+  table.bill-table { width: 100%; border-collapse: collapse; margin-top: 8px; table-layout: fixed; }
+  table.bill-table th { text-align: center; border-bottom: 2px solid #000; padding: 8px 2px; font-size: 10px; text-transform: uppercase; background: #f9fafb; font-weight: 700; }
+  table.bill-table th:first-child { text-align: left; }
+  table.bill-table td { padding: 8px 2px; border-bottom: 1px solid #eee; font-size: 11px; vertical-align: middle; text-align: center; word-wrap: break-word; }
+  table.bill-table td:first-child { text-align: left; }
+  table.bill-table td:nth-child(3) { text-align: left; } 
+  table.bill-table td:last-child { text-align: right; }
+
+  /* Bill Columns Width */
+  .col-sn { width: 8%; }
+  .col-img { width: 12%; }
+  .col-nm { width: 35%; }
+  .col-qt { width: 10%; }
+  .col-pr { width: 15%; }
+  .col-tt { width: 20%; text-align: right !important; }
+
+  .bill-img { width: 30px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; display: block; margin: 0 auto; }
+
+  /* HISTORY LIST */
+  .history-item { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
+
+  /* BOTTOM NAV */
+  .bottom-nav { 
+    position: fixed; bottom: 0; width: 100%; background: white; 
+    border-top: 1px solid #f3f4f6; display: flex; justify-content: space-around; 
+    padding: 10px 0; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.02);
+  }
+  .nav-item { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #9ca3af; background: none; border: none; width: 100%; cursor: pointer; 
+  }
+  .nav-item .material-icons-round { font-size: 24px; margin-bottom: 4px; transition: 0.2s; }
+  .nav-item span { font-size: 10px; font-weight: 500; }
+  .nav-item.active { color: #6200ea; }
+  .nav-item.active .material-icons-round { transform: translateY(-2px); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .clean-mode .no-print { display: none !important; }
+</style>
 </head>
+<body>
 
-<body class="antialiased selection:bg-[#00ff7f] selection:text-black">
-    
-    <!-- INITIALIZATION OVERLAY -->
-    <div id="init-overlay">
-        <div class="text-center space-y-4 px-4 w-full max-w-md">
-            <h1 class="font-orbitron text-4xl md:text-6xl text-[--accent-primary] tracking-[0.2em] animate-pulse">YUKU PROTOCOL</h1>
-            <p class="font-mono text-gray-400 text-xs md:text-sm tracking-widest mb-8">ESTABLISHING SECURE CONNECTION...</p>
-            
-            <!-- Main Init Button -->
-            <button id="start-btn" class="w-full py-4 border border-[--accent-primary] text-[--accent-primary] font-bold hover:bg-[--accent-primary] hover:text-black transition-all duration-300 uppercase tracking-widest text-lg group relative overflow-hidden">
-                <span class="relative z-10">[ CLICK TO INITIALIZE SYSTEM ]</span>
-                <div class="absolute inset-0 bg-[--accent-primary] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></div>
-            </button>
-            
-            <!-- Audio Permission Button (Triggers User Gesture) -->
-            <button id="audio-btn" class="w-full py-3 text-xs font-mono text-gray-500 hover:text-[--accent-primary] border border-white/10 hover:border-[--accent-primary]/50 transition-all uppercase tracking-widest">
-                [ ENABLE AUDIO UPLINK ]
-            </button>
-            <p id="audio-status" class="text-[10px] text-green-500 font-mono h-4"></p>
-        </div>
+  <div class="app-bar">
+    <div style="display:flex; align-items:center;">
+      <span class="material-icons-round">receipt_long</span>
+      <h1>Billing App</h1>
     </div>
+    <div class="help-btn" onclick="showTutorial()">
+      <span class="material-icons-round">help_outline</span>
+    </div>
+  </div>
+
+  <div class="content">
     
-    <!-- Local Audio Player -->
-    <audio id="bg-music" loop>
-        <source src="/assets/Haseen - Talwiinder.mp3" type="audio/mpeg">
-        <!-- Fallback if path is slightly different in production -->
-        <source src="assets/Haseen - Talwiinder.mp3" type="audio/mpeg">
-    </audio>
-    
-    <!-- Backgrounds -->
-    <div class="system-grid"></div>
-    <div class="scanlines"></div>
-    
-    <!-- 3D Canvas -->
-    <canvas id="webgl-canvas"></canvas>
-    
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 px-6 py-4 md:py-6 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-sm pointer-events-auto">
-        <div class="flex items-center gap-2">
-            <div class="w-2 h-2 bg-[--accent-primary] animate-pulse"></div>
-            <div class="font-orbitron text-xl md:text-2xl font-bold tracking-[0.2em] text-white">YUKU</div>
+    <div id="tab-setup" class="tab-view">
+      <div class="card">
+        <h3>Store Profile</h3>
+        <div class="input-group">
+          <label>Shop Name</label>
+          <input type="text" id="shopName" placeholder="Business Name" onblur="saveData()">
+        </div>
+        <div class="input-group">
+          <label>Address & Phone</label>
+          <textarea id="shopAddr" rows="3" placeholder="Address..." onblur="saveData()"></textarea>
+        </div>
+        <button class="btn" onclick="saveData(true)"><span class="material-icons-round">save</span> Save Details</button>
+      </div>
+    </div>
+
+    <div id="tab-items" class="tab-view">
+      <div class="card">
+        <h3>Add Product</h3>
+        <label class="file-upload">
+          <span class="material-icons-round">add_a_photo</span> Select Image
+          <input type="file" id="itemImg" accept="image/*">
+        </label>
+        <div id="imgPreview" style="font-size:11px; color:green; margin:5px 0; display:none; text-align:center;">Image Selected</div>
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <div style="flex:2"><label>Name</label><input type="text" id="itemName"></div>
+          <div style="flex:1"><label>Price</label><input type="number" id="itemPrice"></div>
+        </div>
+        <button class="btn" onclick="addItem()"><span class="material-icons-round">add</span> Add</button>
+      </div>
+
+      <input type="text" id="searchInv" placeholder="🔍 Search Inventory..." oninput="filterInventory()" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:10px; margin-bottom:10px;">
+      
+      <div id="inventoryList" style="background:white; border-radius:12px; padding:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05);"></div>
+    </div>
+
+    <div id="tab-cart" class="tab-view active">
+      <div class="card">
+        <div class="input-group">
+          <label>Customer Name</label>
+          <input type="text" id="custName" placeholder="Client Name" onblur="renderCartList()">
         </div>
         
-        <div class="hidden md:flex items-center gap-8 text-xs font-bold tracking-[0.2em] uppercase text-gray-400">
-            <a href="#about" class="hover:text-white transition-colors shery-magnetic">About</a>
-            <a href="#operatives" class="hover:text-white transition-colors shery-magnetic">Operatives</a>
-            <a href="#stream" class="hover:text-white transition-colors shery-magnetic">Data Stream</a>
-            
-            <button onclick="window.location.href='/app.html'" class="group relative px-6 py-2 border border-[--accent-primary]/30 hover:border-[--accent-primary] text-[--accent-primary] transition-all duration-300 shery-magnetic overflow-hidden">
-                <div class="absolute inset-0 bg-[--accent-primary] translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-10"></div>
-                <span class="relative">Access Terminal</span>
-            </button>
+        <div class="input-group">
+          <label>Select Item</label>
+          <select id="prodSelect" onchange="fillPrice()">
+            <option value="">-- Choose --</option>
+          </select>
         </div>
-    </nav>
-    
-    <!-- CONTENT -->
-    <div id="scroll-container">
-        
-        <!-- HERO -->
-        <section class="h-screen w-full flex flex-col justify-center px-6 md:px-24 relative">
-            <div class="max-w-4xl z-10">
-                <div class="flex items-center gap-4 mb-6">
-                    <span class="px-2 py-1 border border-[--accent-primary] text-[--accent-primary] text-[10px] font-bold tracking-widest bg-black/50">SYS.VER.2.5</span>
-                    <span class="text-gray-500 font-mono text-xs">/// DECENTRALIZED CONSENSUS ACTIVE</span>
-                </div>
-                <h1 class="font-orbitron text-5xl md:text-8xl lg:text-8xl font-black text-white leading-none mb-8 mix-blend-difference shery-text">
-                    CRYPTO<br>NEXUS
-                </h1>
-                <p class="text-lg md:text-xl text-gray-400 font-light max-w-xl leading-relaxed">
-                    Orchestrating the next generation of decentralized commerce. Integrating Bitcoin solidity, Ethereum intelligence, and Solana velocity.
-                </p>
-                <div class="mt-12 flex gap-6">
-                    <button onclick="window.location.href='/app.html'" class="px-8 py-3 bg-white text-black font-orbitron font-bold tracking-wider hover:bg-[--accent-primary] transition-colors shery-magnetic">
-                        ENTER SYSTEM
-                    </button>
-                </div>
+
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+          <div style="flex:1"><label>Price</label><input type="number" id="billPrice"></div>
+          <div style="flex:1"><label>Qty</label><input type="number" id="billQty" value="1"></div>
+        </div>
+        <button class="btn" onclick="addToBill()"><span class="material-icons-round">shopping_cart</span> Add to Cart</button>
+      </div>
+
+      <div id="cartListArea" style="background:white; border-radius:12px; padding:10px; margin-bottom:80px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+        </div>
+
+      <div style="position:fixed; bottom:80px; left:16px; right:16px;">
+        <button class="btn" style="box-shadow: 0 4px 15px rgba(98,0,234,0.4);" onclick="watchAdAndGenerate()">
+          Generate Bill <span class="material-icons-round" style="font-size:16px; margin-left:5px;">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="tab-preview" class="tab-view">
+      <div style="margin-bottom:15px;">
+        <button class="btn btn-outline" style="width:auto; padding:8px 15px; font-size:12px;" onclick="goToCart()">
+          <span class="material-icons-round" style="font-size:14px;">arrow_back</span> Edit Cart
+        </button>
+      </div>
+
+      <div id="printArea" class="paper">
+        <div class="inv-head">
+          <div>
+            <div id="outName" style="font-size:16px; font-weight:800; text-transform:uppercase;">SHOP</div>
+            <div id="outAddr" style="color:#555; font-size:11px; margin-top:4px;">Addr</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:bold;">INVOICE</div>
+            <div>#<span id="outInv">101</span></div>
+            <div style="color:#666; font-size:11px; cursor:pointer;" onclick="changeDate()">
+              <span id="outDate">Date</span> <span class="material-icons-round no-print" style="font-size:10px;">edit</span>
             </div>
-            
-            <!-- Scroll Indicator -->
-            <div class="hidden md:flex absolute bottom-10 right-10 flex-col items-center gap-2 opacity-50 pointer-events-none">
-                <span class="text-[10px] font-mono writing-vertical">SCROLL</span>
-                <div class="w-[1px] h-16 bg-white"></div>
-            </div>
-        </section>
-        
-        <!-- PROTOCOL min-h-screen-->
-        <section id="protocol" class="min-h-1 w-full bg-black/80 backdrop-blur-xl border-t border-white/10 py-24 px-6 md:px-24">
-            <div class="section-header">
-                <h2 class="font-orbitron text-3xl md:text-6xl font-bold text-white">01// SERVICES</h2>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                <div class="space-y-8 font-light text-lg text-gray-300 leading-relaxed">
-                    <p>The YUKU architecture is built upon a <span class="text-[--accent-primary]">Multi-Chain Shard Logic</span>. Unlike traditional linear systems, YUKU processes data streams in parallel arrays.</p>
-                    <div class="grid grid-cols-2 gap-4 mt-8">
-                        <div class="hud-panel p-4">
-                            <div class="text-[--accent-primary] font-orbitron text-3xl mb-1">0ms</div>
-                            <div class="text-xs text-gray-500 tracking-widest">LATENCY TARGET</div>
-                        </div>
-                        <div class="hud-panel p-4">
-                            <div class="text-[--accent-primary] font-orbitron text-3xl mb-1">AES-256</div>
-                            <div class="text-xs text-gray-500 tracking-widest">ENCRYPTION</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Feature Cards -->
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="hud-panel p-6 group">
-                        <h3 class="font-orbitron text-xl text-white mb-2 flex justify-between">
-                            <span>Autonomous Commerce</span>
-                            <svg class="w-5 h-5 text-[--accent-primary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                        </h3>
-                        <p class="text-sm text-gray-400">Self-managing mini-stores that optimize inventory based on real-time data.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- OPERATIVES -->
-        <section id="operatives" class="w-full bg-[#050505] border-t border-white/10 py-24 px-6 md:px-24">
-            <div class="section-header flex justify-end">
-                <h2 class="font-orbitron text-3xl md:text-6xl font-bold text-white">02// OPERATIVES</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Member 1 -->
-                <div class="hud-panel group h-96 relative">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60 group-hover:opacity-100">
-                    <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
-                        <h3 class="text-2xl font-orbitron text-white">PixelArt002</h3>
-                        <div class="text-[--accent-primary] text-xs font-mono tracking-widest">LEAD ARCHITECT</div>
-                    </div>
-                </div>
-                <!-- Member 2 -->
-                <div class="hud-panel group h-96 relative">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60 group-hover:opacity-100">
-                    <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
-                        <h3 class="text-2xl font-orbitron text-white">Cipher</h3>
-                        <div class="text-[--accent-primary] text-xs font-mono tracking-widest">SECURITY OPS</div>
-                    </div>
-                </div>
-                <!-- Member 3 -->
-                <div class="hud-panel group h-96 relative">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60 group-hover:opacity-100">
-                    <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
-                        <h3 class="text-2xl font-orbitron text-white">Nova</h3>
-                        <div class="text-[--accent-primary] text-xs font-mono tracking-widest">AI SYNTHESIS</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- DATA STREAM (Fixed Layout) -->
-        <section id="stream" class="min-h-1 w-full bg-black border-t border-white/10 py-24 px-6 md:px-24">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
-                <div class="section-header mb-0">
-                    <h2 class="font-orbitron text-3xl md:text-6xl font-bold text-white">03 // DATA STREAM</h2>
-                </div>
-                <div class="flex items-center gap-2 text-[--accent-primary] font-mono text-sm animate-pulse">
-                    <span class="w-2 h-2 bg-[--accent-primary] rounded-full"></span>
-                    LIVE FEED INCOMING
-                </div>
-            </div>
-            
-            <!-- Testimonials Grid -->
-            <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                <!-- Dynamic Content -->
-                <div class="col-span-full h-64 flex items-center justify-center hud-panel">
-                    <div class="text-center">
-                        <div class="inline-block w-6 h-6 border-2 border-[--accent-primary] border-t-transparent rounded-full animate-spin mb-4"></div>
-                        <p class="font-mono text-gray-500 text-sm tracking-widest">ESTABLISHING UPLINK...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        
-        
-        <section id="about" class="min-h-1 w-full bg-black/80 backdrop-blur-xl border-t border-white/10 py-24 px-6 md:px-24">
-            
-            <div class="section-header">
-                <h2 class="font-orbitron text-3xl md:text-6xl font-bold text-white">04// ABOUT</h2>
-            </div>
-            <p>The YUKU architecture is built upon a <span class="text-[--accent-primary]">Multi-Chain Shard Logic</span>. Unlike traditional linear systems, YUKU processes data streams in parallel arrays.</p>
-            
-            <br>
-            <!-- Feature Cards -->
-            <div class="grid grid-cols-1 gap-4">
-                <div class="hud-panel p-6 group">
-                    <h3 class="font-orbitron text-xl text-white mb-2 flex justify-between">
-                        <span> Yuku-Protocol is a decentralized AI network where models, agents, and data operate securely without central control. It enables user-owned intelligence, transparent execution, and autonomous agent interactions. Builders can deploy, scale, and monetize AI freely, creating an open, trustless ecosystem for next-generation AI applications.</span>
-                        <svg class="w-5 h-5 text-[--accent-primary]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </h3>
-                    <p class="text-sm text-gray-100">AI-powered micro-retail units that handle inventory, analytics, and optimization autonomously.</p>
-                </div>
-            </div>
-            
-        </section>
-        
-        
-        <section id="blank " class="min-h-1 w-full bg-black border-t border-white/10 py-24 px-6 md:px-24"> </section>
-        
-        
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8360942174797973"
-     crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="fluid"
-     data-ad-layout-key="-6t+ed+2i-1n-4w"
-     data-ad-client="ca-pub-8360942174797973"
-     data-ad-slot="1409489432"></ins>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px; border-bottom:1px dashed #ccc; padding-bottom:5px;">
+          <span style="font-size:10px; color:#888;">BILL TO:</span> <b id="outClient">Customer</b>
+        </div>
+
+        <table class="bill-table">
+          <thead>
+            <tr>
+              <th class="col-sn">S.No</th>
+              <th class="col-img">Img</th>
+              <th class="col-nm">Item</th>
+              <th class="col-qt">Qty</th>
+              <th class="col-pr">Price</th>
+              <th class="col-tt">Total</th>
+            </tr>
+          </thead>
+          <tbody id="billBody"></tbody>
+        </table>
+
+        <div style="margin-top:20px; text-align:right; font-size:16px; font-weight:800; border-top:2px solid #000; padding-top:10px;">
+          Total: <span id="outTotal">0.00</span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <button class="btn btn-outline" onclick="saveAndNew()">Save & New</button>
+        <button class="btn" onclick="downloadImg()">Download</button>
+      </div>
+    </div>
+
+    <div id="tab-history" class="tab-view">
+      <div class="card">
+        <h3>History</h3>
+        <input type="text" id="searchHistory" placeholder="Search..." oninput="filterHistory()" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px;">
+        <div id="historyList"></div>
+      </div>
+      <button class="btn btn-danger" onclick="clearHistory()">Clear All</button>
+    </div>
+
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="switchTab('tab-setup', this)"><span class="material-icons-round">store</span><span>Shop</span></button>
+    <button class="nav-item" onclick="switchTab('tab-items', this)"><span class="material-icons-round">inventory_2</span><span>Items</span></button>
+    <button class="nav-item active" onclick="switchTab('tab-cart', this)"><span class="material-icons-round">shopping_cart</span><span>Cart</span></button>
+    <button class="nav-item" onclick="switchTab('tab-history', this)"><span class="material-icons-round">history</span><span>History</span></button>
+  </div>
+
 <script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-        
-           <section id="footer-links" class="min-h-1 w-full bg-black/80 backdrop-blur-xl border-t border-white/10 py-24 px-6 md:px-24">
-               
-               
-               
-               
-                   <div class="grid grid-cols-3 gap-4 mt-8">
-        <div class="hud-panel p-4">
-           <div class="text-[--accent-primary] font-orbitron text-xs mb-1"><a href="/misc/privacy-policy.html"> PRIVACY-POLICY</a></div>
-        </div>
-        <div class="hud-panel p-4">
-            <div class="text-[--accent-primary] font-orbitron text-xs mb-1"><button  onclick="window.location.href='#about'">ABOUT</button></div>
-          
-        </div>
-           <div class="hud-panel p-4">
-       <div class="text-[--accent-primary] font-orbitron text-xs mb-1"><a href="/pages/blog.html">BLOG</a></div>
-       
-   </div>
-    </div>
-    </div>
-               
-               
-               
-           </section>
-        
-        
-        
-        
-        
-        
-        <!-- FOOTER -->
-        <footer class="py-12 bg-[#030303] border-t border-white/10 text-center relative z-10">
-            <h1 class="font-orbitron text-[12vw] md:text-[15vw] leading-none text-[#0a0a0a] font-black select-none">YUKU</h1>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <div class="text-center">
-                    <p class="text-gray-500 font-mono text-xs tracking-widest">GRATEFUL FOR YOU</p>
-                    <p class="text-gray-700 text-[10px] mt-2">&copy; 2025 YUKU PROTOCOL</p>
-                </div>
-            </div>
-        </footer>
-        
-    </div>
-    
-    <!-- DEPENDENCIES -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.min.js"></script>
-    
-    <!-- SHERY JS -->
-    <script src="https://unpkg.com/sheryjs/dist/Shery.js"></script>
-    
-    <!-- THREE JS & POST PROCESSING -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    
-    <script>
-        // --- AUDIO CONTROLLER (LOCAL MP3) ---
-        const audioElement = document.getElementById('bg-music');
-        
-        function enableAudio() {
-            // This function is triggered by the "User Gesture" (Button Click)
-            if (audioElement) {
-                audioElement.volume = 1.0; // Full Volume
-                audioElement.play().then(() => {
-                    document.getElementById('audio-status').textContent = "AUDIO LINK ESTABLISHED";
-                    document.getElementById('audio-btn').style.display = 'none'; // Hide button after success
-                }).catch(error => {
-                    console.error("Audio Play Failed:", error);
-                    document.getElementById('audio-status').textContent = "LINK FAILED: INTERACTION REQUIRED";
-                });
-            }
-        }
-        
-        // --- BUTTON EVENT LISTENERS ---
-        
-        // 1. "ENABLE AUDIO UPLINK" Button
-        document.getElementById('audio-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            enableAudio();
-        });
-        
-        // 2. "INITIALIZE" Button (Main Entry)
-        document.getElementById('start-btn').addEventListener('click', () => {
-            const overlay = document.getElementById('init-overlay');
-            
-            // Try to play audio here too (as it's a user gesture)
-            enableAudio();
-            
-            // Fade out overlay
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 800);
-            
-            // Init other systems
-            initApp();
-        });
-        
-        // --- APP INITIALIZATION ---
-        const API_BASE_URL = 'https://giant-noell-pixelart002-1c1d1fda.koyeb.app';
-        
-        function initApp() {
-            // 1. SMOOTH SCROLL
-            const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
-            
-            function raf(time) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
-            }
-            requestAnimationFrame(raf);
-            gsap.registerPlugin(ScrollTrigger);
-            
-            // 2. SHERY JS
-            Shery.mouseFollower({
-                skew: false,
-                ease: "cubic-bezier(0.23, 1, 0.320, 1)",
-                duration: 1,
-            });
-            Shery.makeMagnet(".shery-magnetic", { ease: "cubic-bezier(0.23, 1, 0.320, 1)", duration: 1 });
-            Shery.textAnimate(".shery-text", { style: 1, y: 10, delay: 0.1, duration: 2, ease: "cubic-bezier(0.23, 1, 0.320, 1)", multiplier: 0.1 });
-            
-            // 3. DATA STREAM
-            fetchTestimonials();
-            
-            // 4. 3D SCENE
-            initThreeJS();
-        }
-        
-        // --- 3. THREE.JS CRYPTO SCENE ---
-        const initThreeJS = () => {
-            const canvas = document.querySelector('#webgl-canvas');
-            const scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x030303, 0.02);
-            
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 12;
-            camera.position.y = 2;
-            
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.toneMapping = THREE.ReinhardToneMapping;
-            
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.autoRotate = true;
-            controls.autoRotateSpeed = 1.0;
-            
-            // Lighting
-            const ambientLight = new THREE.AmbientLight(0x404040, 2);
-            scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0xffffff, 1);
-            pointLight.position.set(10, 10, 10);
-            scene.add(pointLight);
-            const btcLight = new THREE.PointLight(0xF7931A, 2, 20);
-            btcLight.position.set(0, 2, 2);
-            scene.add(btcLight);
-            
-            // Textures
-            const textureLoader = new THREE.TextureLoader();
-            textureLoader.crossOrigin = "anonymous";
-            
-            const btcTexture = textureLoader.load('https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=029');
-            const ethTexture = textureLoader.load('https://cryptologos.cc/logos/ethereum-eth-logo.png?v=029');
-            const solTexture = textureLoader.load('https://cryptologos.cc/logos/solana-sol-logo.png?v=029');
-            
-            const group = new THREE.Group();
-            scene.add(group);
-            
-            // 1. BITCOIN
-            const btcGeo = new THREE.CylinderGeometry(2.5, 2.5, 0.2, 64);
-            const btcMaterials = [
-                new THREE.MeshStandardMaterial({ color: 0xF7931A, metalness: 0.9, roughness: 0.3 }),
-                new THREE.MeshBasicMaterial({ map: btcTexture, transparent: true }),
-                new THREE.MeshBasicMaterial({ map: btcTexture, transparent: true })
-            ];
-            const btcCoin = new THREE.Mesh(btcGeo, btcMaterials);
-            btcCoin.rotation.x = Math.PI / 2;
-            group.add(btcCoin);
-            
-            // 2. ETHEREUM
-            const ethGeo = new THREE.CylinderGeometry(1.5, 1.5, 0.1, 32);
-            const ethMaterials = [
-                new THREE.MeshStandardMaterial({ color: 0x627EEA }),
-                new THREE.MeshBasicMaterial({ map: ethTexture, transparent: true }),
-                new THREE.MeshBasicMaterial({ map: ethTexture, transparent: true })
-            ];
-            const ethCoin = new THREE.Mesh(ethGeo, ethMaterials);
-            ethCoin.position.set(5, 2, 0);
-            ethCoin.rotation.x = Math.PI / 2;
-            group.add(ethCoin);
-            
-            // 3. SOLANA
-            const solGeo = new THREE.CylinderGeometry(1.5, 1.5, 0.1, 32);
-            const solMaterials = [
-                new THREE.MeshStandardMaterial({ color: 0x14F195 }),
-                new THREE.MeshBasicMaterial({ map: solTexture, transparent: true }),
-                new THREE.MeshBasicMaterial({ map: solTexture, transparent: true })
-            ];
-            const solCoin = new THREE.Mesh(solGeo, solMaterials);
-            solCoin.position.set(-5, -2, 1);
-            solCoin.rotation.x = Math.PI / 2;
-            group.add(solCoin);
-            
-            // Post Processing
-            const composer = new THREE.EffectComposer(renderer);
-            composer.addPass(new THREE.RenderPass(scene, camera));
-            const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-            bloomPass.threshold = 0.2;
-            bloomPass.strength = 1.5;
-            bloomPass.radius = 0.5;
-            composer.addPass(bloomPass);
-            
-            // Animation
-            const clock = new THREE.Clock();
-            const animate = () => {
-                const t = clock.getElapsedTime();
-                group.rotation.y = t * 0.2;
-                ethCoin.rotation.z = t;
-                solCoin.rotation.z = -t;
-                controls.update();
-                composer.render();
-                requestAnimationFrame(animate);
-            };
-            animate();
-            
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                composer.setSize(window.innerWidth, window.innerHeight);
-            });
-        };
-        
-        // --- 4. DATA STREAM LOGIC (Layout Fix) ---
-        const _createStarsHtml = (rating) => {
-            let stars = '';
-            for (let i = 1; i <= 5; i++) {
-                const colorClass = i <= rating ? 'text-[--accent-primary]' : 'text-gray-800';
-                stars += `<span class="${colorClass} text-sm">★</span>`;
-            }
-            return stars;
-        };
-        
-        const fetchTestimonials = async () => {
-            const container = document.getElementById('testimonials-grid');
-            try {
-                const response = await fetch(`${API_BASE_URL}/feedback/`);
-                if (!response.ok) throw new Error("Network response was not ok");
-                const data = await response.json();
-                
-                if (data && data.length > 0) {
-                    container.innerHTML = '';
-                    data.forEach((item, index) => {
-                        const date = new Date(item.created_at).toLocaleDateString();
-                        const card = document.createElement('div');
-                        
-                        // FIX: Added 'flex-col' and 'break-words' to prevent overflow
-                        card.className = "hud-panel p-6 hover:border-[--accent-primary] transition-colors duration-300 flex flex-col justify-between min-h-[200px] w-full";
-                        
-                        card.innerHTML = `
-                            <div class="w-full">
-                                <div class="flex flex-wrap items-center justify-between gap-2 mb-4 border-b border-white/5 pb-4">
-                                    <div class="font-orbitron text-[--accent-primary] text-lg truncate max-w-[70%]">@${item.username}</div>
-                                    <div class="flex shrink-0">${_createStarsHtml(item.rating)}</div>
-                                </div>
-                                <div class="font-mono text-gray-500 text-xs mb-2">>_ INCOMING TRANSMISSION:</div>
-                                <p class="text-gray-300 font-light italic leading-relaxed mb-4 text-sm break-words whitespace-normal">"${item.comment}"</p>
-                            </div>
-                            <div class="mt-auto pt-4 border-t border-white/5 flex justify-between items-center w-full">
-                                <span class="text-[10px] text-gray-600 font-mono tracking-widest">ID: ${item._id ? item._id.slice(-6).toUpperCase() : 'UNK'}</span>
-                                <span class="text-[10px] text-[--accent-primary] font-mono">${date}</span>
-                            </div>
-                        `;
-                        container.appendChild(card);
-                        gsap.from(card, { opacity: 0, y: 30, duration: 0.6, delay: index * 0.1, scrollTrigger: { trigger: container, start: "top 85%" } });
-                    });
-                } else {
-                    container.innerHTML = `<div class="col-span-full text-center font-mono text-gray-600 border border-dashed border-gray-800 p-12">NO DATA PACKETS FOUND IN SECTOR.</div>`;
-                }
-            } catch (error) {
-                console.error("Stream Error:", error);
-                container.innerHTML = `<div class="col-span-full text-center font-mono text-red-500 border border-red-900/30 bg-red-900/10 p-8">UPLINK FAILED: ${error.message}</div>`;
-            }
-        };
-    </script>
-</body>
+// --- GOOGLE ADMOB CONFIGURATION ---
+const ADMOB_APP_ID = "ca-app-pub-8360942174797973~8738643442";
+const ADMOB_UNIT_ID = "ca-app-pub-8360942174797973/2001844707";
+let isAdReady = false;
 
+// --- CORE DATA ---
+const app = {
+  inventory: JSON.parse(localStorage.getItem('billing_inv')) || [],
+  cart: [],
+  invNo: parseInt(localStorage.getItem('billing_invNo')) || 101,
+  history: JSON.parse(localStorage.getItem('billing_hist')) || [],
+  date: new Date().toLocaleDateString('en-GB')
+};
+
+// --- INITIALIZE ---
+window.onload = () => {
+  document.getElementById('shopName').value = localStorage.getItem('billing_name') || "";
+  document.getElementById('shopAddr').value = localStorage.getItem('billing_addr') || "";
+  renderInventoryList();
+  renderCartList();
+  renderHistory(app.history);
+  
+  if(!localStorage.getItem('tut_shown')) {
+      showTutorial();
+      localStorage.setItem('tut_shown', 'true');
+  }
+
+  // Init AdMob (Capacitor/Cordova Logic)
+  document.addEventListener('deviceready', initAdMob, false);
+};
+
+// --- ADMOB LOGIC (REAL) ---
+function initAdMob() {
+    if (typeof admob !== 'undefined') {
+        admob.setOptions({
+            publisherId: ADMOB_APP_ID,
+            interstitialAdId: ADMOB_UNIT_ID, 
+            autoShow: false
+        });
+        
+        // Preload Reward Video
+        admob.rewardvideo.prepare();
+        
+        document.addEventListener('admob.rewardvideo.events.LOAD_FAIL', function(event) {
+           console.log("Ad Failed");
+        });
+        
+        document.addEventListener('admob.rewardvideo.events.LOAD', function(event) {
+           isAdReady = true;
+        });
+        
+        document.addEventListener('admob.rewardvideo.events.CLOSE', function(event) {
+           // On Ad Close -> Open Bill
+           admob.rewardvideo.prepare(); // Prep next one
+           goToPreview();
+        });
+        
+        document.addEventListener('admob.rewardvideo.events.REWARD', function(event) {
+           // User earned reward
+        });
+    }
+}
+
+function watchAdAndGenerate() {
+    if(app.cart.length === 0) return Swal.fire({icon:'info', text:'Cart is empty'});
+
+    // Check if running in App (Capacitor)
+    if (typeof admob !== 'undefined') {
+        Swal.fire({
+            title: 'Generating Bill...',
+            text: 'Watch a short ad to unlock your invoice.',
+            confirmButtonText: 'Watch Ad',
+            showCancelButton: true,
+            confirmButtonColor: '#6200ea'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show Real Ad
+                admob.rewardvideo.show();
+            }
+        });
+    } else {
+        // Fallback for Web/Testing (Simulates Ad)
+        Swal.fire({
+            title: 'Sponsor Ad',
+            text: '(Real Ad will appear here in APK)',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        }).then(() => {
+            goToPreview(); // Proceed after "Ad"
+        });
+    }
+}
+
+// --- NAVIGATION ---
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-view').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+function saveData(popup=false) {
+  localStorage.setItem('billing_name', document.getElementById('shopName').value);
+  localStorage.setItem('billing_addr', document.getElementById('shopAddr').value);
+  if(popup) Swal.fire({icon:'success', title:'Saved', toast:true, position:'bottom', timer:1000, showConfirmButton:false});
+}
+
+function showTutorial() {
+    Swal.fire({
+        title: 'Quick Guide',
+        html: `<div style="text-align:left;font-size:13px;line-height:1.6;">1. Setup Shop<br>2. Add Items (Photo optional)<br>3. Add to Cart & Generate Bill<br>4. Save or Download</div>`,
+        confirmButtonColor: '#6200ea'
+    });
+}
+
+// --- INVENTORY ---
+async function addItem() {
+  const n = document.getElementById('itemName').value;
+  const p = document.getElementById('itemPrice').value;
+  const f = document.getElementById('itemImg').files[0];
+  if(!n || !p) return Swal.fire({icon:'warning', text:'Missing details'});
+
+  let img = null;
+  if(f) img = await resizeImage(f);
+
+  app.inventory.push({n, p, img});
+  localStorage.setItem('billing_inv', JSON.stringify(app.inventory));
+  
+  document.getElementById('itemName').value="";
+  document.getElementById('itemPrice').value="";
+  document.getElementById('itemImg').value="";
+  document.getElementById('imgPreview').style.display='none';
+  renderInventoryList();
+  Swal.fire({icon:'success', title:'Added', toast:true, position:'bottom', timer:1000});
+}
+
+function resizeImage(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement('canvas');
+        const ctx = c.getContext('2d');
+        const scale = 80/img.width;
+        c.width = 80; c.height = img.height*scale;
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.6));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// --- INVENTORY LIST AS TABLE ---
+function renderInventoryList() {
+  const listArea = document.getElementById('inventoryList');
+  const sel = document.getElementById('prodSelect');
+  const term = document.getElementById('searchInv').value.toLowerCase();
+  
+  const filtered = app.inventory.filter(i => i.n.toLowerCase().includes(term));
+
+  sel.innerHTML = "<option value=''>-- Select --</option>";
+  
+  if(filtered.length === 0) {
+      listArea.innerHTML = "<div style='text-align:center; padding:20px; color:#999;'>No items found</div>";
+  } else {
+      let html = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:10%">#</th>
+              <th style="width:15%">Img</th>
+              <th style="width:40%">Item</th>
+              <th style="width:20%">Price</th>
+              <th style="width:15%">Act</th>
+            </tr>
+          </thead>
+          <tbody>`;
+      
+      filtered.forEach((i) => {
+        const orgIdx = app.inventory.indexOf(i);
+        const imgHtml = i.img ? `<img src="${i.img}" class="thumb-img">` : `<span style="font-size:18px; color:#ccc;">📷</span>`;
+        
+        html += `
+          <tr>
+            <td>${orgIdx + 1}</td>
+            <td>${imgHtml}</td>
+            <td>${i.n}</td>
+            <td>${i.p}</td>
+            <td>
+                <span class="material-icons-round" style="color:red; cursor:pointer;" onclick="delItem(${orgIdx})">delete</span>
+            </td>
+          </tr>`;
+      });
+      html += `</tbody></table>`;
+      listArea.innerHTML = html;
+  }
+
+  app.inventory.forEach(i => {
+      sel.innerHTML += `<option value="${i.p}">${i.n}</option>`;
+  });
+}
+
+function filterInventory() { renderInventoryList(); }
+
+function delItem(i) {
+  if(confirm("Delete item?")) {
+      app.inventory.splice(i,1);
+      localStorage.setItem('billing_inv', JSON.stringify(app.inventory));
+      renderInventoryList();
+  }
+}
+
+// --- CART LOGIC ---
+function fillPrice() {
+  document.getElementById('billPrice').value = document.getElementById('prodSelect').value;
+}
+
+function addToBill() {
+  const sel = document.getElementById('prodSelect');
+  const nm = sel.options[sel.selectedIndex].text;
+  const pr = parseFloat(document.getElementById('billPrice').value);
+  const qt = parseFloat(document.getElementById('billQty').value);
+  if(!pr || !qt || sel.value==="") return Swal.fire({icon:'error', text:'Invalid'});
+
+  const item = app.inventory.find(i=>i.n===nm);
+  const img = item ? item.img : null;
+
+  const ex = app.cart.find(c=>c.nm===nm);
+  if(ex) { ex.qt+=qt; ex.tot=ex.qt*pr; }
+  else { app.cart.push({nm, pr, qt, tot:pr*qt, img}); }
+  
+  renderCartList();
+}
+
+// --- CART LIST AS TABLE ---
+function renderCartList() {
+  const d = document.getElementById('cartListArea');
+  d.innerHTML = "";
+  if(app.cart.length===0) { d.innerHTML="<div style='text-align:center;color:#999;padding:20px'>Cart Empty</div>"; return; }
+  
+  let html = `
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Img</th><th>Item</th><th>Price</th><th>Qty</th><th>Del</th></tr></thead>
+      <tbody>`;
+  
+  app.cart.forEach((c,i)=>{
+    const img = c.img ? `<img src="${c.img}" class="thumb-img">` : '';
+    html += `
+      <tr>
+        <td>${i+1}</td>
+        <td>${img}</td>
+        <td>${c.nm}</td>
+        <td>${c.pr}</td>
+        <td>${c.qt}</td>
+        <td><span class="material-icons-round" style="color:red; font-size:18px; cursor:pointer;" onclick="remCart(${i})">delete</span></td>
+      </tr>`;
+  });
+  
+  html += `</tbody></table>`;
+  d.innerHTML = html;
+}
+
+function remCart(i) { app.cart.splice(i,1); renderCartList(); }
+
+// --- PREVIEW LOGIC ---
+function goToPreview() {
+  
+  document.getElementById('outName').innerText = document.getElementById('shopName').value || "SHOP";
+  document.getElementById('outAddr').innerText = document.getElementById('shopAddr').value || "Address";
+  document.getElementById('outClient').innerText = document.getElementById('custName').value || "Customer";
+  document.getElementById('outInv').innerText = app.invNo;
+  document.getElementById('outDate').innerText = app.date;
+
+  const b = document.getElementById('billBody');
+  b.innerHTML = "";
+  let tot = 0;
+
+  app.cart.forEach((c, i) => {
+    tot += c.tot;
+    const imgTag = c.img ? `<img src="${c.img}" class="bill-img">` : '';
+    b.innerHTML += `
+      <tr>
+        <td>${i+1}</td>
+        <td>${imgTag}</td>
+        <td>${c.nm}</td>
+        <td>${c.qt}</td>
+        <td>${c.pr}</td>
+        <td style="text-align:right">${c.tot}</td>
+      </tr>`;
+  });
+  
+  document.getElementById('outTotal').innerText = tot.toFixed(2);
+  switchTab('tab-preview');
+}
+
+function goToCart() { switchTab('tab-cart', document.querySelector('.bottom-nav button:nth-child(3)')); }
+
+function changeDate() {
+  Swal.fire({title:'Date', html:'<input type="date" id="swalDate" class="swal2-input">', preConfirm:()=>document.getElementById('swalDate').value})
+  .then(res=>{ if(res.value) { app.date = new Date(res.value).toLocaleDateString('en-GB'); goToPreview(); }});
+}
+
+// --- SAVE & HISTORY ---
+function saveAndNew() {
+  const rec = {
+    id: app.invNo,
+    client: document.getElementById('custName').value || "Guest",
+    date: app.date,
+    total: document.getElementById('outTotal').innerText,
+    items: [...app.cart]
+  };
+  app.history.unshift(rec);
+  localStorage.setItem('billing_hist', JSON.stringify(app.history));
+  
+  app.cart=[]; app.invNo++; 
+  localStorage.setItem('billing_invNo', app.invNo);
+  app.date = new Date().toLocaleDateString('en-GB');
+  document.getElementById('custName').value="";
+  renderCartList(); renderHistory(app.history);
+  goToCart();
+  Swal.fire({icon:'success', title:'Saved', toast:true, position:'bottom'});
+}
+
+function renderHistory(data) {
+  const h = document.getElementById('historyList');
+  h.innerHTML="";
+  data.forEach((r,i)=>{
+    h.innerHTML+=`
+    <div class="history-item">
+      <div><b>#${r.id}</b> ${r.client}<br><small>${r.date}</small></div>
+      <div style="text-align:right">
+        <b>${r.total}</b><br>
+        <button class="btn-view" onclick="loadHist(${i})">VIEW</button>
+      </div>
+    </div>`;
+  });
+}
+
+function loadHist(i) {
+  const r = app.history[i];
+  app.cart = [...r.items];
+  document.getElementById('custName').value = r.client;
+  app.invNo = r.id; 
+  app.date = r.date;
+  goToPreview();
+  document.getElementById('outInv').innerText = r.id;
+}
+
+function filterHistory() {
+  const t = document.getElementById('searchHistory').value.toLowerCase();
+  renderHistory(app.history.filter(h=>h.client.toLowerCase().includes(t) || h.id.toString().includes(t)));
+}
+
+function clearHistory() {
+  if(confirm("Delete all?")) {
+    app.history = [];
+    localStorage.removeItem('billing_hist');
+    renderHistory([]);
+  }
+}
+
+function downloadImg() {
+  const e = document.getElementById('printArea');
+  e.classList.add('clean-mode');
+  Swal.fire({title:'Saving...', didOpen:()=>Swal.showLoading()});
+  html2canvas(e, {scale:2}).then(c=>{
+    const a = document.createElement('a');
+    a.download = `Bill_${document.getElementById('outInv').innerText}.png`;
+    a.href=c.toDataURL(); a.click();
+    e.classList.remove('clean-mode'); Swal.close();
+  });
+}
+
+document.getElementById('itemImg').addEventListener('change', function(){
+  if(this.files[0]) document.getElementById('imgPreview').style.display='block';
+});
+</script>
+</body>
 </html>
