@@ -7,14 +7,16 @@
   <meta name="theme-color" content="#6200ea">
   <title>Billing App Pro</title>
   
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
-  <!-- IMPORTANT: Capacitor Core is injected automatically in the app, 
-       but we ensure scripts are ready -->
+  <!-- Capacitor Script (Required for Android build) -->
+  <!-- <script src="capacitor.js"></script> -->
 
   <style>
     /* --- CSS STYLES --- */
@@ -38,11 +40,15 @@
     .input-group { margin-bottom: 15px; }
     label { font-size: 11px; color: #6b7280; margin-bottom: 6px; display: block; text-transform: uppercase; font-weight: 700; }
     input, textarea, select { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 15px; background: #f9fafb; transition: 0.2s; }
+    input:focus, textarea:focus, select:focus { border-color: #6200ea; background: #fff; outline: none; }
+    
     .btn { background: #6200ea; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; width: 100%; font-size: 14px; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.1s; }
+    .btn:active { transform: scale(0.97); }
     .btn-outline { background: white; color: #6200ea; border: 1px solid #6200ea; }
+    .btn-danger { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
     .file-upload { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: #ede9fe; color: #6200ea; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; border: 1px dashed #6200ea; }
     .file-upload input { display: none; }
-    
+
     /* TABLES & PAPER */
     .data-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
     .data-table th { text-align: left; background: #f3f4f6; padding: 10px; border-radius: 8px 8px 0 0; color: #555; }
@@ -50,9 +56,8 @@
     .paper { background: white; padding: 20px; font-size: 12px; color: #000; border-radius: 2px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: relative; border-top: 5px solid #6200ea; margin-bottom: 20px; }
     table.bill-table { width: 100%; border-collapse: collapse; margin-top: 8px; table-layout: fixed; }
     table.bill-table th { text-align: center; border-bottom: 2px solid #000; padding: 8px 2px; font-size: 10px; text-transform: uppercase; background: #f9fafb; font-weight: 700; }
-    table.bill-table th:first-child { text-align: left; }
     table.bill-table td { padding: 8px 2px; border-bottom: 1px solid #eee; font-size: 11px; vertical-align: middle; text-align: center; word-wrap: break-word; }
-    table.bill-table td:first-child { text-align: left; }
+    table.bill-table th:first-child, table.bill-table td:first-child { text-align: left; }
     table.bill-table td:last-child { text-align: right; }
     .bill-img { width: 30px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; margin: 0 auto; display: block; }
     
@@ -78,13 +83,13 @@
       <span class="material-icons-round">receipt_long</span>
       <h1 style="font-size:18px; font-weight:600; margin-left:10px;">Billing App</h1>
     </div>
-    <div class="help-btn" onclick="showTutorial()" style="background:rgba(255,255,255,0.2); border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">
+    <div class="help-btn" onclick="showTutorial()">
       <span class="material-icons-round">help_outline</span>
     </div>
   </div>
   
   <div class="content">
-    <!-- SETUP TAB -->
+    <!-- 1. SETUP TAB -->
     <div id="tab-setup" class="tab-view">
       <div class="card">
         <h3>Store Profile</h3>
@@ -100,7 +105,7 @@
       </div>
     </div>
     
-    <!-- ITEMS TAB -->
+    <!-- 2. ITEMS TAB -->
     <div id="tab-items" class="tab-view">
       <div class="card">
         <h3>Add Product</h3>
@@ -119,56 +124,55 @@
       <div id="inventoryList" style="background:white; border-radius:12px; padding:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05);"></div>
     </div>
     
-    <!-- CART TAB -->
+    <!-- 3. CART TAB -->
     <div id="tab-cart" class="tab-view active">
       <div class="card">
         <div class="input-group">
           <label>Customer Name</label>
-          <input type="text" id="custName" placeholder="Client Name">
+          <input type="text" id="custName" placeholder="Client Name" onblur="renderCartList()">
         </div>
         <div class="input-group">
           <label>Select Item</label>
           <select id="prodSelect" onchange="fillPrice()"><option value="">-- Choose --</option></select>
         </div>
         <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <div style="flex:1"><label>Price</label><input type="number" id="billPrice"></div>
-            <div style="flex:1"><label>Qty</label><input type="number" id="billQty" value="1"></div>
+          <div style="flex:1"><label>Price</label><input type="number" id="billPrice"></div>
+          <div style="flex:1"><label>Qty</label><input type="number" id="billQty" value="1"></div>
         </div>
         <button class="btn" onclick="addToBill()">Add to Cart</button>
       </div>
       <div id="cartListArea" style="background:white; border-radius:12px; padding:10px; margin-bottom:80px;"></div>
       <div style="position:fixed; bottom:80px; left:16px; right:16px;">
-        <button class="btn" onclick="goToPreview()">Generate Bill</button>
+        <button class="btn" style="box-shadow: 0 4px 15px rgba(98,0,234,0.4);" onclick="watchAdAndGenerate()">
+          Generate Bill <span class="material-icons-round" style="font-size:16px; margin-left:5px;">arrow_forward</span>
+        </button>
       </div>
     </div>
     
-    <!-- PREVIEW TAB -->
+    <!-- 4. PREVIEW TAB -->
     <div id="tab-preview" class="tab-view">
       <div style="margin-bottom:15px;">
         <button class="btn btn-outline" style="width:auto; padding:8px 15px;" onclick="goToCart()">Edit Cart</button>
       </div>
-      
       <div id="printArea" class="paper">
-        <!-- Invoice Layout -->
         <div class="inv-head">
           <div><div id="outName" style="font-weight:800;">SHOP</div><div id="outAddr" style="font-size:11px;">Addr</div></div>
           <div style="text-align:right;"><div>INVOICE</div><div>#<span id="outInv">101</span></div><div id="outDate">Date</div></div>
         </div>
         <div style="border-bottom:1px dashed #ccc; padding-bottom:5px;">BILL TO: <b id="outClient">Customer</b></div>
-        <table class="bill-table" style="width:100%; margin-top:10px;">
+        <table class="bill-table">
           <thead><tr><th style="text-align:left;">Item</th><th>Qty</th><th>Price</th><th style="text-align:right;">Total</th></tr></thead>
           <tbody id="billBody"></tbody>
         </table>
         <div style="margin-top:20px; text-align:right; font-weight:800; border-top:2px solid #000;">Total: <span id="outTotal">0.00</span></div>
       </div>
-      
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
         <button class="btn btn-outline" onclick="saveAndNew()">Save & New</button>
         <button class="btn" onclick="downloadBillCapacitor()">Download</button>
       </div>
     </div>
     
-    <!-- HISTORY TAB -->
+    <!-- 5. HISTORY TAB -->
     <div id="tab-history" class="tab-view">
       <div class="card">
         <h3>History</h3>
@@ -188,7 +192,11 @@
   </div>
   
   <script>
-    // --- APP STATE ---
+    // --- APP CONFIG ---
+    const ADMOB_APP_ID = "ca-app-pub-8360942174797973~8738643442";
+    const ADMOB_UNIT_ID = "ca-app-pub-8360942174797973/2001844707";
+    let isAdReady = false;
+
     const app = {
       inventory: JSON.parse(localStorage.getItem('billing_inv')) || [],
       cart: [],
@@ -197,9 +205,9 @@
       date: new Date().toLocaleDateString('en-GB')
     };
 
-    // --- STARTUP ---
+    // --- STARTUP LOGIC ---
     window.onload = () => {
-      // 1. Splash Screen
+      // 1. Splash Animation
       setTimeout(() => {
         document.getElementById('splash-screen').style.opacity = '0';
         setTimeout(() => document.getElementById('splash-screen').style.visibility = 'hidden', 500);
@@ -208,61 +216,63 @@
       // 2. Load Data
       document.getElementById('shopName').value = localStorage.getItem('billing_name') || "";
       document.getElementById('shopAddr').value = localStorage.getItem('billing_addr') || "";
-      renderInventoryList();
-      renderCartList();
-      renderHistory(app.history);
+      renderInventoryList(); renderCartList(); renderHistory(app.history);
       
-      // 3. AdMob (If Device Ready)
-      document.addEventListener('deviceready', initAdMob, false);
+      // 3. Initialize Capacitor Plugins
+      document.addEventListener('deviceready', () => {
+          initAdMob();
+          // Ask for permissions early if needed (Optional, better to ask on action)
+      }, false);
     };
 
-    // --- CAPACITOR DOWNLOAD LOGIC (STRICT) ---
+    // --- CAPACITOR DOWNLOAD LOGIC ---
+    // Uses @capacitor/filesystem (Documentation Standard)
     async function downloadBillCapacitor() {
       const element = document.getElementById('printArea');
-      
-      // UI Feedback
       const btn = document.querySelector('#tab-preview .btn:last-child');
       const oldText = btn.innerText;
+
+      // UI Feedback
       btn.innerText = "Processing...";
       btn.disabled = true;
-
-      // Ensure clean capture
-      element.classList.add('clean-mode');
+      element.classList.add('clean-mode'); // Hide edit icons
       
       try {
+        // 1. Generate Image Base64
         const canvas = await html2canvas(element, { scale: 2, useCORS: true });
         const base64Data = canvas.toDataURL('image/png');
         const fileName = `Bill_${document.getElementById('outInv').innerText}_${Date.now()}.png`;
-        const dataToWrite = base64Data.split(',')[1]; // Remove 'data:image/png;base64,' prefix
+        const dataToWrite = base64Data.split(',')[1]; // Remove header
 
-        // Check if Capacitor is available
+        // 2. Check Environment
         if (window.Capacitor) {
             const { Filesystem, Directory } = Capacitor.Plugins;
 
-            // Save to Documents/Download folder
             try {
+                // 3. Save to Device (Documents Directory)
                 const result = await Filesystem.writeFile({
                     path: fileName,
                     data: dataToWrite,
                     directory: Directory.Documents
                 });
-                
-                // Show Success
+
+                // Success Message with Path
                 Swal.fire({
                     icon: 'success',
                     title: 'Saved!',
-                    text: 'File saved to Documents folder.',
-                    timer: 2000,
+                    text: 'Saved to Documents folder.',
+                    timer: 2500,
                     showConfirmButton: false
                 });
 
             } catch (fsErr) {
-                // If permission error, ask user
-                console.error(fsErr);
-                Swal.fire('Storage Error', 'Please allow storage permission in Android Settings.', 'error');
+                console.error("FS Error:", fsErr);
+                // If permission error, ask user to check settings
+                Swal.fire('Storage Access', 'Could not save. Please check Storage Permissions in Android Settings.', 'warning');
             }
+
         } else {
-            // Browser Fallback
+            // Browser Fallback (Testing on PC)
             const a = document.createElement('a');
             a.download = fileName;
             a.href = base64Data;
@@ -280,14 +290,28 @@
       }
     }
 
-    // --- ADS (OPTIONAL) ---
+    // --- ADS (Unchanged) ---
     function initAdMob() {
       if (typeof admob !== 'undefined') {
-        // Init Logic Here
+        admob.setOptions({ publisherId: ADMOB_APP_ID, interstitialAdId: ADMOB_UNIT_ID, autoShow: false });
+        admob.rewardvideo.prepare();
+        document.addEventListener('admob.rewardvideo.events.LOAD', () => { isAdReady = true; });
+        document.addEventListener('admob.rewardvideo.events.CLOSE', () => { admob.rewardvideo.prepare(); goToPreview(); });
       }
     }
 
-    // --- STANDARD APP FUNCTIONS (Tabs, Inventory, Cart) ---
+    function watchAdAndGenerate() {
+      if (app.cart.length === 0) return Swal.fire({ icon: 'info', text: 'Cart is empty' });
+      if (typeof admob !== 'undefined') {
+        Swal.fire({ title: 'Generate?', confirmButtonText: 'Watch Ad', showCancelButton: true }).then((r) => {
+          if (r.isConfirmed) admob.rewardvideo.show();
+        });
+      } else {
+        goToPreview(); // Web fallback
+      }
+    }
+
+    // --- STANDARD APP FUNCTIONS (Unchanged Logic) ---
     function switchTab(id, btn) {
       document.querySelectorAll('.tab-view').forEach(e => e.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
@@ -316,8 +340,8 @@
       localStorage.setItem('billing_inv', JSON.stringify(app.inventory));
       document.getElementById('itemName').value = "";
       document.getElementById('itemPrice').value = "";
-      document.getElementById('itemImg').value = ""; // Clear file input
-      document.getElementById('imgPreview').style.display = 'none'; // Hide preview
+      document.getElementById('itemImg').value = "";
+      document.getElementById('imgPreview').style.display = 'none';
       renderInventoryList();
       Swal.fire({ icon: 'success', title: 'Added', timer: 1000, showConfirmButton: false });
     }
@@ -364,7 +388,6 @@
     }
 
     function filterInventory() { renderInventoryList(); }
-
     function fillPrice() { document.getElementById('billPrice').value = document.getElementById('prodSelect').value; }
 
     function addToBill() {
@@ -408,7 +431,7 @@
       document.getElementById('outTotal').innerText = tot.toFixed(2);
       switchTab('tab-preview');
     }
-    
+
     function goToCart() { switchTab('tab-cart', document.querySelector('.bottom-nav button:nth-child(3)')); }
 
     function changeDate() {
@@ -456,7 +479,6 @@
     });
   </script>
 </body>
-
 </html>
 
 
