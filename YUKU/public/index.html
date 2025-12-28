@@ -391,6 +391,9 @@
       app.inventory.push({ n, p, img });
       localStorage.setItem('billing_inv', JSON.stringify(app.inventory));
       document.getElementById('itemName').value = "";
+      document.getElementById('itemPrice').value = "";
+      document.getElementById('itemImg').value = ""; // Clear file input
+      document.getElementById('imgPreview').style.display = 'none'; // Hide preview
       renderInventoryList();
       Swal.fire({ icon: 'success', title: 'Added', timer: 1000, showConfirmButton: false });
     }
