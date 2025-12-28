@@ -7,14 +7,16 @@
   <meta name="theme-color" content="#6200ea">
   <title>Billing App Pro</title>
   
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
-    /* --- CSS STYLES (Responsive & Clean) --- */
+    /* --- CSS STYLES --- */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -32,6 +34,49 @@
       overflow: hidden;
       color: #1f2937;
     }
+
+    /* --- SPLASH SCREEN --- */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #6200ea;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+
+    .splash-logo {
+      font-size: 64px;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    .splash-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .splash-loader {
+      margin-top: 30px;
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
     
     /* APP BAR */
     .app-bar {
@@ -201,7 +246,7 @@
       display: none;
     }
     
-    /* DATA TABLES (Cart & Inventory) */
+    /* DATA TABLES */
     .data-table {
       width: 100%;
       border-collapse: collapse;
@@ -232,7 +277,7 @@
       display: block;
     }
     
-    /* INVOICE PAPER (PREVIEW TAB) */
+    /* INVOICE PAPER */
     .paper {
       background: white;
       padding: 20px;
@@ -253,7 +298,7 @@
       margin-bottom: 16px;
     }
     
-    /* BILL TABLE (6 COLUMNS) */
+    /* BILL TABLE */
     table.bill-table {
       width: 100%;
       border-collapse: collapse;
@@ -271,9 +316,7 @@
       font-weight: 700;
     }
     
-    table.bill-table th:first-child {
-      text-align: left;
-    }
+    table.bill-table th:first-child { text-align: left; }
     
     table.bill-table td {
       padding: 8px 2px;
@@ -284,43 +327,17 @@
       word-wrap: break-word;
     }
     
-    table.bill-table td:first-child {
-      text-align: left;
-    }
+    table.bill-table td:first-child { text-align: left; }
+    table.bill-table td:nth-child(3) { text-align: left; }
+    table.bill-table td:last-child { text-align: right; }
     
-    table.bill-table td:nth-child(3) {
-      text-align: left;
-    }
-    
-    table.bill-table td:last-child {
-      text-align: right;
-    }
-    
-    /* Bill Columns Width */
-    .col-sn {
-      width: 8%;
-    }
-    
-    .col-img {
-      width: 12%;
-    }
-    
-    .col-nm {
-      width: 35%;
-    }
-    
-    .col-qt {
-      width: 10%;
-    }
-    
-    .col-pr {
-      width: 15%;
-    }
-    
-    .col-tt {
-      width: 20%;
-      text-align: right !important;
-    }
+    /* Bill Column Widths */
+    .col-sn { width: 8%; }
+    .col-img { width: 12%; }
+    .col-nm { width: 35%; }
+    .col-qt { width: 10%; }
+    .col-pr { width: 15%; }
+    .col-tt { width: 20%; text-align: right !important; }
     
     .bill-img {
       width: 30px;
@@ -330,18 +347,6 @@
       border: 1px solid #ddd;
       display: block;
       margin: 0 auto;
-    }
-    
-    /* HISTORY LIST */
-    .history-item {
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid #eee;
     }
     
     /* BOTTOM NAV */
@@ -390,15 +395,8 @@
     }
     
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .clean-mode .no-print {
@@ -409,6 +407,14 @@
 
 <body>
   
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen">
+    <span class="material-icons-round splash-logo">receipt_long</span>
+    <div class="splash-text">Billing App Pro</div>
+    <div class="splash-loader"></div>
+  </div>
+
+  <!-- APP BAR -->
   <div class="app-bar">
     <div style="display:flex; align-items:center;">
       <span class="material-icons-round">receipt_long</span>
@@ -419,8 +425,10 @@
     </div>
   </div>
   
+  <!-- MAIN CONTENT -->
   <div class="content">
     
+    <!-- Setup Tab -->
     <div id="tab-setup" class="tab-view">
       <div class="card">
         <h3>Store Profile</h3>
@@ -436,6 +444,7 @@
       </div>
     </div>
     
+    <!-- Items Tab -->
     <div id="tab-items" class="tab-view">
       <div class="card">
         <h3>Add Product</h3>
@@ -457,6 +466,7 @@
       <div id="inventoryList" style="background:white; border-radius:12px; padding:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05);"></div>
     </div>
     
+    <!-- Cart Tab -->
     <div id="tab-cart" class="tab-view active">
       <div class="card">
         <div class="input-group">
@@ -488,6 +498,7 @@
       </div>
     </div>
     
+    <!-- Preview Tab -->
     <div id="tab-preview" class="tab-view">
       <div style="margin-bottom:15px;">
         <button class="btn btn-outline" style="width:auto; padding:8px 15px; font-size:12px;" onclick="goToCart()">
@@ -539,6 +550,7 @@
       </div>
     </div>
     
+    <!-- History Tab -->
     <div id="tab-history" class="tab-view">
       <div class="card">
         <h3>History</h3>
@@ -558,12 +570,11 @@
   </div>
   
   <script>
-    // --- GOOGLE ADMOB CONFIGURATION ---
+    // --- APP & ADMOB CONFIG ---
     const ADMOB_APP_ID = "ca-app-pub-8360942174797973~8738643442";
     const ADMOB_UNIT_ID = "ca-app-pub-8360942174797973/2001844707";
     let isAdReady = false;
     
-    // --- CORE DATA ---
     const app = {
       inventory: JSON.parse(localStorage.getItem('billing_inv')) || [],
       cart: [],
@@ -572,24 +583,99 @@
       date: new Date().toLocaleDateString('en-GB')
     };
     
-    // --- INITIALIZE ---
+    // --- SPLASH & STARTUP LOGIC ---
     window.onload = () => {
+      // 1. Simulate Splash Timeout
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        splash.style.opacity = '0';
+        splash.style.visibility = 'hidden';
+        
+        // 2. Check Permissions / First Time Setup
+        checkPermissions();
+      }, 2500);
+
+      // Load Saved Data
       document.getElementById('shopName').value = localStorage.getItem('billing_name') || "";
       document.getElementById('shopAddr').value = localStorage.getItem('billing_addr') || "";
       renderInventoryList();
       renderCartList();
       renderHistory(app.history);
       
-      if (!localStorage.getItem('tut_shown')) {
+      // Capacitor/Cordova Event
+      document.addEventListener('deviceready', initAdMob, false);
+    };
+
+    // --- PERMISSION LOGIC ---
+    function checkPermissions() {
+      if (!localStorage.getItem('permissions_granted')) {
+        Swal.fire({
+          title: 'Permission Request',
+          html: `
+            <div style="text-align:left; font-size:14px; color:#555;">
+              To provide the best experience, we need access to:
+              <ul style="margin:10px 0 10px 20px;">
+                <li><b>Storage:</b> To save invoice images.</li>
+                <li><b>Ad Services:</b> To keep the app free.</li>
+              </ul>
+            </div>
+          `,
+          icon: 'info',
+          confirmButtonText: 'Grant Permissions',
+          confirmButtonColor: '#6200ea',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            requestNativePermissions();
+          }
+        });
+      } else if (!localStorage.getItem('tut_shown')) {
         showTutorial();
         localStorage.setItem('tut_shown', 'true');
       }
-      
-      // Init AdMob (Capacitor/Cordova Logic)
-      document.addEventListener('deviceready', initAdMob, false);
-    };
+    }
+
+    function requestNativePermissions() {
+      // Logic for Android/Hybrid Apps
+      if (window.cordova && window.cordova.plugins && window.cordova.plugins.permissions) {
+        const permissions = window.cordova.plugins.permissions;
+        const list = [
+            permissions.WRITE_EXTERNAL_STORAGE,
+            permissions.READ_EXTERNAL_STORAGE
+        ];
+        
+        permissions.requestPermissions(list, function(status) {
+            if( !status.hasPermission ) {
+               Swal.fire('Notice', 'Storage permission denied. You may not be able to save images.', 'warning');
+            }
+            localStorage.setItem('permissions_granted', 'true');
+            // Show tutorial after permission check
+            if (!localStorage.getItem('tut_shown')) {
+               showTutorial();
+               localStorage.setItem('tut_shown', 'true');
+            }
+        }, function() {
+            Swal.fire('Error', 'Permission error occurred.', 'error');
+            localStorage.setItem('permissions_granted', 'true');
+        });
+      } else {
+        // Web Fallback
+        Swal.fire({
+            title: 'Setup Complete',
+            text: 'Welcome to Billing App Pro!',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+        });
+        localStorage.setItem('permissions_granted', 'true');
+        if (!localStorage.getItem('tut_shown')) {
+           showTutorial();
+           localStorage.setItem('tut_shown', 'true');
+        }
+      }
+    }
     
-    // --- ADMOB LOGIC (REAL) ---
+    // --- ADMOB LOGIC ---
     function initAdMob() {
       if (typeof admob !== 'undefined') {
         admob.setOptions({
@@ -598,25 +684,13 @@
           autoShow: false
         });
         
-        // Preload Reward Video
         admob.rewardvideo.prepare();
         
-        document.addEventListener('admob.rewardvideo.events.LOAD_FAIL', function(event) {
-          console.log("Ad Failed");
-        });
-        
-        document.addEventListener('admob.rewardvideo.events.LOAD', function(event) {
-          isAdReady = true;
-        });
-        
+        document.addEventListener('admob.rewardvideo.events.LOAD_FAIL', function(event) { console.log("Ad Failed"); });
+        document.addEventListener('admob.rewardvideo.events.LOAD', function(event) { isAdReady = true; });
         document.addEventListener('admob.rewardvideo.events.CLOSE', function(event) {
-          // On Ad Close -> Open Bill
-          admob.rewardvideo.prepare(); // Prep next one
+          admob.rewardvideo.prepare();
           goToPreview();
-        });
-        
-        document.addEventListener('admob.rewardvideo.events.REWARD', function(event) {
-          // User earned reward
         });
       }
     }
@@ -624,33 +698,29 @@
     function watchAdAndGenerate() {
       if (app.cart.length === 0) return Swal.fire({ icon: 'info', text: 'Cart is empty' });
       
-      // Check if running in App (Capacitor)
       if (typeof admob !== 'undefined') {
         Swal.fire({
-          title: 'Generating Bill...',
-          text: 'Watch a short ad to unlock your invoice.',
+          title: 'Unlock Invoice',
+          text: 'Watch a short ad to generate your bill.',
           confirmButtonText: 'Watch Ad',
           showCancelButton: true,
           confirmButtonColor: '#6200ea'
         }).then((result) => {
           if (result.isConfirmed) {
-            // Show Real Ad
             admob.rewardvideo.show();
           }
         });
       } else {
-        // Fallback for Web/Testing (Simulates Ad)
+        // Web Simulation
         Swal.fire({
-          title: 'Sponsor Ad',
-          text: '(Real Ad will appear here in APK)',
-          timer: 2000,
+          title: 'Generating...',
+          text: '(Simulating Ad for Web)',
+          timer: 1500,
           timerProgressBar: true,
           showConfirmButton: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
+          didOpen: () => Swal.showLoading()
         }).then(() => {
-          goToPreview(); // Proceed after "Ad"
+          goToPreview();
         });
       }
     }
@@ -672,7 +742,7 @@
     function showTutorial() {
       Swal.fire({
         title: 'Quick Guide',
-        html: `<div style="text-align:left;font-size:13px;line-height:1.6;">1. Setup Shop<br>2. Add Items (Photo optional)<br>3. Add to Cart & Generate Bill<br>4. Save or Download</div>`,
+        html: `<div style="text-align:left;font-size:13px;line-height:1.6;">1. Setup Shop Details<br>2. Add Items to Inventory<br>3. Create Cart & Generate Bill<br>4. Download PDF/Image</div>`,
         confirmButtonColor: '#6200ea'
       });
     }
@@ -718,7 +788,6 @@
       });
     }
     
-    // --- INVENTORY LIST AS TABLE ---
     function renderInventoryList() {
       const listArea = document.getElementById('inventoryList');
       const sel = document.getElementById('prodSelect');
@@ -778,7 +847,7 @@
       }
     }
     
-    // --- CART LOGIC ---
+    // --- CART ---
     function fillPrice() {
       document.getElementById('billPrice').value = document.getElementById('prodSelect').value;
     }
@@ -803,7 +872,6 @@
       renderCartList();
     }
     
-    // --- CART LIST AS TABLE ---
     function renderCartList() {
       const d = document.getElementById('cartListArea');
       d.innerHTML = "";
@@ -836,9 +904,8 @@
       renderCartList();
     }
     
-    // --- PREVIEW LOGIC ---
+    // --- PREVIEW ---
     function goToPreview() {
-      
       document.getElementById('outName').innerText = document.getElementById('shopName').value || "SHOP";
       document.getElementById('outAddr').innerText = document.getElementById('shopAddr').value || "Address";
       document.getElementById('outClient').innerText = document.getElementById('custName').value || "Customer";
@@ -961,3 +1028,5 @@
 </body>
 
 </html>
+
+
