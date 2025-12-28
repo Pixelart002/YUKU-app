@@ -13,6 +13,9 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
+  <!-- IMPORTANT: Capacitor Core is injected automatically in the app, 
+       but we ensure scripts are ready -->
+
   <style>
     /* --- CSS STYLES --- */
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -26,57 +29,37 @@
     @keyframes spin { 100% { transform: rotate(360deg); } }
     @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
 
-    /* APP BAR */
+    /* UI ELEMENTS */
     .app-bar { background: #6200ea; color: white; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(98, 0, 234, 0.2); z-index: 50; }
-    .app-bar h1 { font-size: 18px; margin-left: 10px; font-weight: 600; }
-    
-    /* CONTENT */
     .content { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 90px; scroll-behavior: smooth; }
     .tab-view { display: none; animation: fadeIn 0.3s ease; }
     .tab-view.active { display: block; }
-    
-    /* CARDS */
     .card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid #e5e7eb; }
     .input-group { margin-bottom: 15px; }
     label { font-size: 11px; color: #6b7280; margin-bottom: 6px; display: block; text-transform: uppercase; font-weight: 700; }
     input, textarea, select { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 15px; background: #f9fafb; transition: 0.2s; }
-    input:focus, textarea:focus, select:focus { border-color: #6200ea; background: #fff; outline: none; }
-    
     .btn { background: #6200ea; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; width: 100%; font-size: 14px; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.1s; }
-    .btn:active { transform: scale(0.97); }
     .btn-outline { background: white; color: #6200ea; border: 1px solid #6200ea; }
-    .btn-danger { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
     .file-upload { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: #ede9fe; color: #6200ea; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; border: 1px dashed #6200ea; }
     .file-upload input { display: none; }
-
-    /* TABLES */
+    
+    /* TABLES & PAPER */
     .data-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
     .data-table th { text-align: left; background: #f3f4f6; padding: 10px; border-radius: 8px 8px 0 0; color: #555; }
     .data-table td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
-    .thumb-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; background: #eee; }
-
-    /* INVOICE PAPER */
     .paper { background: white; padding: 20px; font-size: 12px; color: #000; border-radius: 2px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: relative; border-top: 5px solid #6200ea; margin-bottom: 20px; }
-    .inv-head { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 16px; }
     table.bill-table { width: 100%; border-collapse: collapse; margin-top: 8px; table-layout: fixed; }
     table.bill-table th { text-align: center; border-bottom: 2px solid #000; padding: 8px 2px; font-size: 10px; text-transform: uppercase; background: #f9fafb; font-weight: 700; }
+    table.bill-table th:first-child { text-align: left; }
     table.bill-table td { padding: 8px 2px; border-bottom: 1px solid #eee; font-size: 11px; vertical-align: middle; text-align: center; word-wrap: break-word; }
-    table.bill-table td:first-child, table.bill-table th:first-child { text-align: left; }
+    table.bill-table td:first-child { text-align: left; }
     table.bill-table td:last-child { text-align: right; }
     .bill-img { width: 30px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; margin: 0 auto; display: block; }
-    .col-sn { width: 8%; } .col-img { width: 12%; } .col-nm { width: 35%; } .col-qt { width: 10%; } .col-pr { width: 15%; } .col-tt { width: 20%; }
-
-    /* HISTORY */
-    .history-item { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
-    .btn-view { background: #ede9fe; color: #6200ea; border: 1px solid #6200ea; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
-
-    /* BOTTOM NAV */
+    
     .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #f3f4f6; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.02); }
     .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9ca3af; background: none; border: none; width: 100%; cursor: pointer; }
-    .nav-item .material-icons-round { font-size: 24px; margin-bottom: 4px; }
-    .nav-item span { font-size: 10px; font-weight: 500; }
     .nav-item.active { color: #6200ea; }
-
+    
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .clean-mode .no-print { display: none !important; }
   </style>
@@ -84,28 +67,24 @@
 
 <body>
   
-  <!-- SPLASH SCREEN -->
   <div id="splash-screen">
     <span class="material-icons-round splash-logo">receipt_long</span>
     <div class="splash-text">Billing App Pro</div>
     <div class="splash-loader"></div>
   </div>
 
-  <!-- APP BAR -->
   <div class="app-bar">
     <div style="display:flex; align-items:center;">
       <span class="material-icons-round">receipt_long</span>
-      <h1>Billing App</h1>
+      <h1 style="font-size:18px; font-weight:600; margin-left:10px;">Billing App</h1>
     </div>
-    <div class="help-btn" onclick="showTutorial()">
+    <div class="help-btn" onclick="showTutorial()" style="background:rgba(255,255,255,0.2); border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">
       <span class="material-icons-round">help_outline</span>
     </div>
   </div>
   
-  <!-- CONTENT -->
   <div class="content">
-    
-    <!-- 1. SETUP TAB -->
+    <!-- SETUP TAB -->
     <div id="tab-setup" class="tab-view">
       <div class="card">
         <h3>Store Profile</h3>
@@ -117,11 +96,11 @@
           <label>Address & Phone</label>
           <textarea id="shopAddr" rows="3" placeholder="Address..." onblur="saveData()"></textarea>
         </div>
-        <button class="btn" onclick="saveData(true)"><span class="material-icons-round">save</span> Save Details</button>
+        <button class="btn" onclick="saveData(true)">Save Details</button>
       </div>
     </div>
     
-    <!-- 2. ITEMS TAB -->
+    <!-- ITEMS TAB -->
     <div id="tab-items" class="tab-view">
       <div class="card">
         <h3>Add Product</h3>
@@ -134,76 +113,62 @@
           <div style="flex:2"><label>Name</label><input type="text" id="itemName"></div>
           <div style="flex:1"><label>Price</label><input type="number" id="itemPrice"></div>
         </div>
-        <button class="btn" onclick="addItem()"><span class="material-icons-round">add</span> Add</button>
+        <button class="btn" onclick="addItem()" style="margin-top:10px;">Add</button>
       </div>
       <input type="text" id="searchInv" placeholder="🔍 Search Inventory..." oninput="filterInventory()" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:10px; margin-bottom:10px;">
       <div id="inventoryList" style="background:white; border-radius:12px; padding:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05);"></div>
     </div>
     
-    <!-- 3. CART TAB -->
+    <!-- CART TAB -->
     <div id="tab-cart" class="tab-view active">
       <div class="card">
         <div class="input-group">
           <label>Customer Name</label>
-          <input type="text" id="custName" placeholder="Client Name" onblur="renderCartList()">
+          <input type="text" id="custName" placeholder="Client Name">
         </div>
         <div class="input-group">
           <label>Select Item</label>
           <select id="prodSelect" onchange="fillPrice()"><option value="">-- Choose --</option></select>
         </div>
         <div style="display:flex; gap:10px; margin-bottom:15px;">
-          <div style="flex:1"><label>Price</label><input type="number" id="billPrice"></div>
-          <div style="flex:1"><label>Qty</label><input type="number" id="billQty" value="1"></div>
+            <div style="flex:1"><label>Price</label><input type="number" id="billPrice"></div>
+            <div style="flex:1"><label>Qty</label><input type="number" id="billQty" value="1"></div>
         </div>
-        <button class="btn" onclick="addToBill()"><span class="material-icons-round">shopping_cart</span> Add to Cart</button>
+        <button class="btn" onclick="addToBill()">Add to Cart</button>
       </div>
       <div id="cartListArea" style="background:white; border-radius:12px; padding:10px; margin-bottom:80px;"></div>
       <div style="position:fixed; bottom:80px; left:16px; right:16px;">
-        <button class="btn" style="box-shadow: 0 4px 15px rgba(98,0,234,0.4);" onclick="watchAdAndGenerate()">
-          Generate Bill <span class="material-icons-round" style="font-size:16px; margin-left:5px;">arrow_forward</span>
-        </button>
+        <button class="btn" onclick="goToPreview()">Generate Bill</button>
       </div>
     </div>
     
-    <!-- 4. PREVIEW TAB -->
+    <!-- PREVIEW TAB -->
     <div id="tab-preview" class="tab-view">
       <div style="margin-bottom:15px;">
-        <button class="btn btn-outline" style="width:auto; padding:8px 15px; font-size:12px;" onclick="goToCart()">
-          <span class="material-icons-round" style="font-size:14px;">arrow_back</span> Edit Cart
-        </button>
+        <button class="btn btn-outline" style="width:auto; padding:8px 15px;" onclick="goToCart()">Edit Cart</button>
       </div>
+      
       <div id="printArea" class="paper">
+        <!-- Invoice Layout -->
         <div class="inv-head">
-          <div>
-            <div id="outName" style="font-size:16px; font-weight:800; text-transform:uppercase;">SHOP</div>
-            <div id="outAddr" style="color:#555; font-size:11px; margin-top:4px;">Addr</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-weight:bold;">INVOICE</div>
-            <div>#<span id="outInv">101</span></div>
-            <div style="color:#666; font-size:11px; cursor:pointer;" onclick="changeDate()">
-              <span id="outDate">Date</span>
-            </div>
-          </div>
+          <div><div id="outName" style="font-weight:800;">SHOP</div><div id="outAddr" style="font-size:11px;">Addr</div></div>
+          <div style="text-align:right;"><div>INVOICE</div><div>#<span id="outInv">101</span></div><div id="outDate">Date</div></div>
         </div>
-        <div style="margin-bottom:10px; border-bottom:1px dashed #ccc; padding-bottom:5px;">
-          <span style="font-size:10px; color:#888;">BILL TO:</span> <b id="outClient">Customer</b>
-        </div>
-        <table class="bill-table">
-          <thead><tr><th class="col-sn">S.No</th><th class="col-img">Img</th><th class="col-nm">Item</th><th class="col-qt">Qty</th><th class="col-pr">Price</th><th class="col-tt">Total</th></tr></thead>
+        <div style="border-bottom:1px dashed #ccc; padding-bottom:5px;">BILL TO: <b id="outClient">Customer</b></div>
+        <table class="bill-table" style="width:100%; margin-top:10px;">
+          <thead><tr><th style="text-align:left;">Item</th><th>Qty</th><th>Price</th><th style="text-align:right;">Total</th></tr></thead>
           <tbody id="billBody"></tbody>
         </table>
-        <div style="margin-top:20px; text-align:right; font-size:16px; font-weight:800; border-top:2px solid #000; padding-top:10px;">
-          Total: <span id="outTotal">0.00</span>
-        </div>
+        <div style="margin-top:20px; text-align:right; font-weight:800; border-top:2px solid #000;">Total: <span id="outTotal">0.00</span></div>
       </div>
+      
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
         <button class="btn btn-outline" onclick="saveAndNew()">Save & New</button>
-        <button class="btn" onclick="forceDownload()">Download</button>
+        <button class="btn" onclick="downloadBillCapacitor()">Download</button>
       </div>
     </div>
     
-    <!-- 5. HISTORY TAB -->
+    <!-- HISTORY TAB -->
     <div id="tab-history" class="tab-view">
       <div class="card">
         <h3>History</h3>
@@ -223,11 +188,7 @@
   </div>
   
   <script>
-    // --- ADMOB CONFIG ---
-    const ADMOB_APP_ID = "ca-app-pub-8360942174797973~8738643442";
-    const ADMOB_UNIT_ID = "ca-app-pub-8360942174797973/2001844707";
-    let isAdReady = false;
-
+    // --- APP STATE ---
     const app = {
       inventory: JSON.parse(localStorage.getItem('billing_inv')) || [],
       cart: [],
@@ -236,161 +197,97 @@
       date: new Date().toLocaleDateString('en-GB')
     };
 
-    // --- STARTUP LOGIC ---
-    document.addEventListener('deviceready', onDeviceReady, false);
-
-    function onDeviceReady() {
-        // 1. Init AdMob
-        initAdMob();
-        
-        // 2. Strict Permissions Request (Updated Logic)
-        requestStrictPermissions();
-    }
-    
-    // Also run onload for web testing
+    // --- STARTUP ---
     window.onload = () => {
-        setTimeout(() => {
-            document.getElementById('splash-screen').style.opacity = '0';
-            setTimeout(() => document.getElementById('splash-screen').style.visibility = 'hidden', 500);
-        }, 2000);
-        
-        // Setup data
-        document.getElementById('shopName').value = localStorage.getItem('billing_name') || "";
-        document.getElementById('shopAddr').value = localStorage.getItem('billing_addr') || "";
-        renderInventoryList();
-        renderCartList();
-        renderHistory(app.history);
-        
-        // If web, simulate deviceready for permission test
-        if (!window.cordova) {
-            console.log("Web Mode: Skipping native permissions");
-        }
+      // 1. Splash Screen
+      setTimeout(() => {
+        document.getElementById('splash-screen').style.opacity = '0';
+        setTimeout(() => document.getElementById('splash-screen').style.visibility = 'hidden', 500);
+      }, 2000);
+      
+      // 2. Load Data
+      document.getElementById('shopName').value = localStorage.getItem('billing_name') || "";
+      document.getElementById('shopAddr').value = localStorage.getItem('billing_addr') || "";
+      renderInventoryList();
+      renderCartList();
+      renderHistory(app.history);
+      
+      // 3. AdMob (If Device Ready)
+      document.addEventListener('deviceready', initAdMob, false);
     };
 
-    // --- STRICT PERMISSION LOGIC ---
-    function requestStrictPermissions() {
-        if (!window.cordova || !window.cordova.plugins || !window.cordova.plugins.permissions) return;
-        
-        const perms = window.cordova.plugins.permissions;
-        const list = [
-            perms.WRITE_EXTERNAL_STORAGE,
-            perms.READ_EXTERNAL_STORAGE
-        ];
+    // --- CAPACITOR DOWNLOAD LOGIC (STRICT) ---
+    async function downloadBillCapacitor() {
+      const element = document.getElementById('printArea');
+      
+      // UI Feedback
+      const btn = document.querySelector('#tab-preview .btn:last-child');
+      const oldText = btn.innerText;
+      btn.innerText = "Processing...";
+      btn.disabled = true;
 
-        // Force check and request
-        perms.checkPermission(perms.WRITE_EXTERNAL_STORAGE, function(status) {
-            if (!status.hasPermission) {
-                perms.requestPermissions(list, 
-                    function(status) { if(!status.hasPermission) errorCallback(); }, 
-                    errorCallback);
-            }
-        });
+      // Ensure clean capture
+      element.classList.add('clean-mode');
+      
+      try {
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+        const base64Data = canvas.toDataURL('image/png');
+        const fileName = `Bill_${document.getElementById('outInv').innerText}_${Date.now()}.png`;
+        const dataToWrite = base64Data.split(',')[1]; // Remove 'data:image/png;base64,' prefix
 
-        function errorCallback() {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Permission Required',
-                text: 'Please allow storage access to save bills.',
-                confirmButtonText: 'Retry'
-            }).then((res) => {
-                if(res.isConfirmed) requestStrictPermissions();
-            });
-        }
-    }
+        // Check if Capacitor is available
+        if (window.Capacitor) {
+            const { Filesystem, Directory } = Capacitor.Plugins;
 
-    // --- FORCE DOWNLOAD LOGIC ---
-    function forceDownload() {
-        const e = document.getElementById('printArea');
-        e.classList.add('clean-mode');
-        Swal.fire({ title: 'Processing...', didOpen: () => Swal.showLoading() });
-        
-        html2canvas(e, { scale: 2, useCORS: true }).then(canvas => {
-            const base64 = canvas.toDataURL('image/png');
-            const fileName = `Bill_${document.getElementById('outInv').innerText}_${Date.now()}.png`;
-
-            if (window.cordova) {
-                // Android Save
-                saveToAndroid(base64, fileName);
-            } else {
-                // Browser Save
-                const a = document.createElement('a');
-                a.download = fileName;
-                a.href = base64;
-                a.click();
-                finishDownload();
-            }
-        });
-    }
-
-    function saveToAndroid(base64, fileName) {
-        const path = cordova.file.externalRootDirectory + "Download/"; // Public Downloads folder
-        
-        window.resolveLocalFileSystemURL(path, function(dir) {
-            dir.getFile(fileName, { create: true }, function(fileEntry) {
-                fileEntry.createWriter(function(fileWriter) {
-                    fileWriter.onwriteend = function() {
-                        finishDownload();
-                        // Scan for Gallery
-                        if(window.cordova.plugins.MediaScannerPlugin) {
-                           window.cordova.plugins.MediaScannerPlugin.scanFile(path + fileName);
-                        }
-                    };
-                    
-                    fileWriter.onerror = function(e) {
-                        Swal.fire('Error', 'Write failed: ' + e.toString(), 'error');
-                    };
-                    
-                    const dataObj = b64toBlob(base64.split(',')[1], 'image/png');
-                    fileWriter.write(dataObj);
+            // Save to Documents/Download folder
+            try {
+                const result = await Filesystem.writeFile({
+                    path: fileName,
+                    data: dataToWrite,
+                    directory: Directory.Documents
                 });
-            });
-        }, function(err) {
-            // Fallback to app cache if Downloads folder fails
-             Swal.fire('Error', 'Storage access denied. Check Settings.', 'error');
-        });
-    }
-    
-    function b64toBlob(b64Data, contentType) {
-        const sliceSize = 512;
-        const byteCharacters = atob(b64Data);
-        const byteArrays = [];
-        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-            const slice = byteCharacters.slice(offset, offset + sliceSize);
-            const byteNumbers = new Array(slice.length);
-            for (let i = 0; i < slice.length; i++) byteNumbers[i] = slice.charCodeAt(i);
-            const byteArray = new Uint8Array(byteNumbers);
-            byteArrays.push(byteArray);
+                
+                // Show Success
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Saved!',
+                    text: 'File saved to Documents folder.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+            } catch (fsErr) {
+                // If permission error, ask user
+                console.error(fsErr);
+                Swal.fire('Storage Error', 'Please allow storage permission in Android Settings.', 'error');
+            }
+        } else {
+            // Browser Fallback
+            const a = document.createElement('a');
+            a.download = fileName;
+            a.href = base64Data;
+            a.click();
+            Swal.fire('Saved', 'Downloaded to device', 'success');
         }
-        return new Blob(byteArrays, {type: contentType});
+
+      } catch (err) {
+          console.error(err);
+          Swal.fire('Error', 'Failed to generate image', 'error');
+      } finally {
+          element.classList.remove('clean-mode');
+          btn.innerText = oldText;
+          btn.disabled = false;
+      }
     }
 
-    function finishDownload() {
-        document.getElementById('printArea').classList.remove('clean-mode');
-        Swal.fire({ icon: 'success', title: 'Saved to Downloads', timer: 2000, showConfirmButton: false });
-    }
-
-    // --- ADS ---
+    // --- ADS (OPTIONAL) ---
     function initAdMob() {
       if (typeof admob !== 'undefined') {
-        admob.setOptions({ publisherId: ADMOB_APP_ID, interstitialAdId: ADMOB_UNIT_ID, autoShow: false });
-        admob.rewardvideo.prepare();
-        document.addEventListener('admob.rewardvideo.events.LOAD', () => { isAdReady = true; });
-        document.addEventListener('admob.rewardvideo.events.CLOSE', () => { admob.rewardvideo.prepare(); goToPreview(); });
+        // Init Logic Here
       }
     }
 
-    function watchAdAndGenerate() {
-      if (app.cart.length === 0) return Swal.fire({ icon: 'info', text: 'Cart is empty' });
-      if (typeof admob !== 'undefined') {
-        Swal.fire({ title: 'Generate Bill?', confirmButtonText: 'Watch Ad', showCancelButton: true }).then((r) => {
-          if (r.isConfirmed) admob.rewardvideo.show();
-        });
-      } else {
-        goToPreview(); // Web fallback
-      }
-    }
-
-    // --- CORE LOGIC (Inventory/Cart/History) ---
+    // --- STANDARD APP FUNCTIONS (Tabs, Inventory, Cart) ---
     function switchTab(id, btn) {
       document.querySelectorAll('.tab-view').forEach(e => e.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
@@ -511,7 +408,7 @@
       document.getElementById('outTotal').innerText = tot.toFixed(2);
       switchTab('tab-preview');
     }
-
+    
     function goToCart() { switchTab('tab-cart', document.querySelector('.bottom-nav button:nth-child(3)')); }
 
     function changeDate() {
