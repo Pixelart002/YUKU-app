@@ -7,26 +7,19 @@
   <meta name="theme-color" content="#6200ea">
   <title>Billing App Pro</title>
   
-  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   
-  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
-    /* --- CORE STYLES --- */
+    /* --- CSS STYLES --- */
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Inter', sans-serif; background: #f0f2f5; height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: #1f2937; }
 
-    /* --- SPLASH SCREEN --- */
-    #splash-screen {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: #6200ea; z-index: 9999; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; color: white;
-      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
-    }
+    /* SPLASH SCREEN */
+    #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #6200ea; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.5s ease-out, visibility 0.5s ease-out; }
     .splash-logo { font-size: 64px; margin-bottom: 20px; animation: bounce 2s infinite; }
     .splash-text { font-size: 24px; font-weight: 700; letter-spacing: 1px; }
     .splash-loader { margin-top: 30px; width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; }
@@ -42,7 +35,7 @@
     .tab-view { display: none; animation: fadeIn 0.3s ease; }
     .tab-view.active { display: block; }
     
-    /* COMPONENTS */
+    /* CARDS */
     .card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid #e5e7eb; }
     .input-group { margin-bottom: 15px; }
     label { font-size: 11px; color: #6b7280; margin-bottom: 6px; display: block; text-transform: uppercase; font-weight: 700; }
@@ -206,7 +199,7 @@
       </div>
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
         <button class="btn btn-outline" onclick="saveAndNew()">Save & New</button>
-        <button class="btn" onclick="checkPermissionAndDownload()">Download</button>
+        <button class="btn" onclick="forceDownload()">Download</button>
       </div>
     </div>
     
@@ -244,102 +237,136 @@
     };
 
     // --- STARTUP LOGIC ---
-    window.onload = () => {
-      // 1. Hide Splash after 2.5s
-      setTimeout(() => {
-        document.getElementById('splash-screen').style.opacity = '0';
-        setTimeout(() => { document.getElementById('splash-screen').style.visibility = 'hidden'; }, 500);
-        
-        // 2. Request Permissions on Startup
-        requestStoragePermission();
-      }, 2500);
+    document.addEventListener('deviceready', onDeviceReady, false);
 
-      // Load Data
-      document.getElementById('shopName').value = localStorage.getItem('billing_name') || "";
-      document.getElementById('shopAddr').value = localStorage.getItem('billing_addr') || "";
-      renderInventoryList();
-      renderCartList();
-      renderHistory(app.history);
-      
-      // Init AdMob
-      document.addEventListener('deviceready', initAdMob, false);
+    function onDeviceReady() {
+        // 1. Init AdMob
+        initAdMob();
+        
+        // 2. Strict Permissions Request (Updated Logic)
+        requestStrictPermissions();
+    }
+    
+    // Also run onload for web testing
+    window.onload = () => {
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.opacity = '0';
+            setTimeout(() => document.getElementById('splash-screen').style.visibility = 'hidden', 500);
+        }, 2000);
+        
+        // Setup data
+        document.getElementById('shopName').value = localStorage.getItem('billing_name') || "";
+        document.getElementById('shopAddr').value = localStorage.getItem('billing_addr') || "";
+        renderInventoryList();
+        renderCartList();
+        renderHistory(app.history);
+        
+        // If web, simulate deviceready for permission test
+        if (!window.cordova) {
+            console.log("Web Mode: Skipping native permissions");
+        }
     };
 
-    // --- PERMISSION & DOWNLOAD LOGIC ---
-    function requestStoragePermission() {
-      if (window.cordova && window.cordova.plugins && window.cordova.plugins.permissions) {
+    // --- STRICT PERMISSION LOGIC ---
+    function requestStrictPermissions() {
+        if (!window.cordova || !window.cordova.plugins || !window.cordova.plugins.permissions) return;
+        
         const perms = window.cordova.plugins.permissions;
-        perms.checkPermission(perms.WRITE_EXTERNAL_STORAGE, (status) => {
-          if (!status.hasPermission) {
-            perms.requestPermission(perms.WRITE_EXTERNAL_STORAGE, 
-              () => console.log('Permission granted'), 
-              () => console.log('Permission denied')
-            );
-          }
+        const list = [
+            perms.WRITE_EXTERNAL_STORAGE,
+            perms.READ_EXTERNAL_STORAGE
+        ];
+
+        // Force check and request
+        perms.checkPermission(perms.WRITE_EXTERNAL_STORAGE, function(status) {
+            if (!status.hasPermission) {
+                perms.requestPermissions(list, 
+                    function(status) { if(!status.hasPermission) errorCallback(); }, 
+                    errorCallback);
+            }
         });
-      }
-    }
 
-    function checkPermissionAndDownload() {
-      if (window.cordova && window.cordova.plugins && window.cordova.plugins.permissions) {
-        const perms = window.cordova.plugins.permissions;
-        perms.checkPermission(perms.WRITE_EXTERNAL_STORAGE, (status) => {
-          if (status.hasPermission) {
-            downloadImg();
-          } else {
-            perms.requestPermission(perms.WRITE_EXTERNAL_STORAGE, downloadImg, 
-              () => Swal.fire('Error', 'Storage permission needed to save bill.', 'error')
-            );
-          }
-        });
-      } else {
-        downloadImg(); // Browser mode
-      }
-    }
-
-    function downloadImg() {
-      const e = document.getElementById('printArea');
-      e.classList.add('clean-mode');
-      Swal.fire({ title: 'Saving Bill...', didOpen: () => Swal.showLoading() });
-      
-      html2canvas(e, { scale: 2, useCORS: true }).then(canvas => {
-        const base64 = canvas.toDataURL('image/png');
-        const fileName = `Bill_${document.getElementById('outInv').innerText}.png`;
-
-        if (window.cordova && window.cordova.file) {
-          saveToAndroid(base64, fileName);
-        } else {
-          const a = document.createElement('a');
-          a.download = fileName;
-          a.href = base64;
-          a.click();
-          finishDownload();
+        function errorCallback() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Permission Required',
+                text: 'Please allow storage access to save bills.',
+                confirmButtonText: 'Retry'
+            }).then((res) => {
+                if(res.isConfirmed) requestStrictPermissions();
+            });
         }
-      });
+    }
+
+    // --- FORCE DOWNLOAD LOGIC ---
+    function forceDownload() {
+        const e = document.getElementById('printArea');
+        e.classList.add('clean-mode');
+        Swal.fire({ title: 'Processing...', didOpen: () => Swal.showLoading() });
+        
+        html2canvas(e, { scale: 2, useCORS: true }).then(canvas => {
+            const base64 = canvas.toDataURL('image/png');
+            const fileName = `Bill_${document.getElementById('outInv').innerText}_${Date.now()}.png`;
+
+            if (window.cordova) {
+                // Android Save
+                saveToAndroid(base64, fileName);
+            } else {
+                // Browser Save
+                const a = document.createElement('a');
+                a.download = fileName;
+                a.href = base64;
+                a.click();
+                finishDownload();
+            }
+        });
     }
 
     function saveToAndroid(base64, fileName) {
-      const path = cordova.file.externalRootDirectory + "Download/";
-      window.resolveLocalFileSystemURL(path, function(dir) {
-        dir.getFile(fileName, { create: true }, function(fileEntry) {
-          fileEntry.createWriter(function(fileWriter) {
-            fileWriter.onwriteend = () => finishDownload();
-            fileWriter.onerror = (e) => Swal.fire('Error', 'Save failed: ' + e.toString(), 'error');
-            
-            const data = atob(base64.split(',')[1]);
-            const bytes = new Uint8Array(data.length);
-            for (let i = 0; i < data.length; i++) bytes[i] = data.charCodeAt(i);
-            const blob = new Blob([bytes], { type: 'image/png' });
-            
-            fileWriter.write(blob);
-          });
+        const path = cordova.file.externalRootDirectory + "Download/"; // Public Downloads folder
+        
+        window.resolveLocalFileSystemURL(path, function(dir) {
+            dir.getFile(fileName, { create: true }, function(fileEntry) {
+                fileEntry.createWriter(function(fileWriter) {
+                    fileWriter.onwriteend = function() {
+                        finishDownload();
+                        // Scan for Gallery
+                        if(window.cordova.plugins.MediaScannerPlugin) {
+                           window.cordova.plugins.MediaScannerPlugin.scanFile(path + fileName);
+                        }
+                    };
+                    
+                    fileWriter.onerror = function(e) {
+                        Swal.fire('Error', 'Write failed: ' + e.toString(), 'error');
+                    };
+                    
+                    const dataObj = b64toBlob(base64.split(',')[1], 'image/png');
+                    fileWriter.write(dataObj);
+                });
+            });
+        }, function(err) {
+            // Fallback to app cache if Downloads folder fails
+             Swal.fire('Error', 'Storage access denied. Check Settings.', 'error');
         });
-      }, (err) => Swal.fire('Error', 'Folder access error', 'error'));
+    }
+    
+    function b64toBlob(b64Data, contentType) {
+        const sliceSize = 512;
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) byteNumbers[i] = slice.charCodeAt(i);
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+        return new Blob(byteArrays, {type: contentType});
     }
 
     function finishDownload() {
-      document.getElementById('printArea').classList.remove('clean-mode');
-      Swal.fire({ icon: 'success', title: 'Saved to Downloads', timer: 1500, showConfirmButton: false });
+        document.getElementById('printArea').classList.remove('clean-mode');
+        Swal.fire({ icon: 'success', title: 'Saved to Downloads', timer: 2000, showConfirmButton: false });
     }
 
     // --- ADS ---
@@ -532,6 +559,7 @@
     });
   </script>
 </body>
+
 </html>
 
 
