@@ -2,640 +2,752 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#6200ea">
-  <title>Billing App Pro</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  
-  <style>
-    /* --- CSS STYLES --- */
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: #f0f2f5; height: 100vh; display: flex; flex-direction: column; overflow: hidden; color: #1f2937; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Billing Pro V7 - Ultra Beast</title>
 
-    /* SPLASH SCREEN */
-    #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #6200ea; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.5s ease-out, visibility 0.5s ease-out; }
-    .splash-logo { font-size: 64px; margin-bottom: 20px; animation: bounce 2s infinite; }
-    .splash-text { font-size: 24px; font-weight: 700; letter-spacing: 1px; }
-    .splash-loader { margin-top: 30px; width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    /* APP BAR */
-    .app-bar { background: #6200ea; color: white; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(98, 0, 234, 0.2); z-index: 50; }
-    .app-bar h1 { font-size: 18px; margin-left: 10px; font-weight: 600; }
-    
-    /* CONTENT */
-    .content { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 90px; scroll-behavior: smooth; }
-    .tab-view { display: none; animation: fadeIn 0.3s ease; }
-    .tab-view.active { display: block; }
-    
-    /* CARDS */
-    .card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid #e5e7eb; }
-    .input-group { margin-bottom: 15px; }
-    label { font-size: 11px; color: #6b7280; margin-bottom: 6px; display: block; text-transform: uppercase; font-weight: 700; }
-    input, textarea, select { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 15px; background: #f9fafb; transition: 0.2s; }
-    input:focus, textarea:focus, select:focus { border-color: #6200ea; background: #fff; outline: none; }
-    
-    .btn { background: #6200ea; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; width: 100%; font-size: 14px; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.1s; }
-    .btn:active { transform: scale(0.97); }
-    .btn-outline { background: white; color: #6200ea; border: 1px solid #6200ea; }
-    .btn-danger { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
-    .file-upload { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: #ede9fe; color: #6200ea; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; border: 1px dashed #6200ea; }
-    .file-upload input { display: none; }
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        primary: '#4f46e5', /* Indigo 600 */
+                        primaryDark: '#4338ca',
+                        secondary: '#64748b',
+                        surface: '#ffffff',
+                        background: '#f1f5f9',
+                        danger: '#ef4444',
+                        success: '#10b981'
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'card': '0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)',
+                    }
+                }
+            }
+        }
+    </script>
 
-    /* TABLES */
-    .data-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-    .data-table th { text-align: left; background: #f3f4f6; padding: 10px; border-radius: 8px 8px 0 0; color: #555; }
-    .data-table td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
-    .thumb-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; background: #eee; }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    /* INVOICE PAPER */
-    .paper { background: white; padding: 20px; font-size: 12px; color: #000; border-radius: 2px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: relative; border-top: 5px solid #6200ea; margin-bottom: 20px; }
-    .inv-head { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 16px; }
-    table.bill-table { width: 100%; border-collapse: collapse; margin-top: 8px; table-layout: fixed; }
-    table.bill-table th { text-align: center; border-bottom: 2px solid #000; padding: 8px 2px; font-size: 10px; text-transform: uppercase; background: #f9fafb; font-weight: 700; }
-    table.bill-table td { padding: 8px 2px; border-bottom: 1px solid #eee; font-size: 11px; vertical-align: middle; text-align: center; word-wrap: break-word; }
-    table.bill-table td:first-child, table.bill-table th:first-child { text-align: left; }
-    table.bill-table td:last-child { text-align: right; }
-    .bill-img { width: 30px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; margin: 0 auto; display: block; }
-    .col-sn { width: 8%; } .col-img { width: 12%; } .col-nm { width: 35%; } .col-qt { width: 10%; } .col-pr { width: 15%; } .col-tt { width: 20%; }
+    <style>
+        /* Hide Scrollbar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* HISTORY */
-    .history-item { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
-    .btn-view { background: #ede9fe; color: #6200ea; border: 1px solid #6200ea; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        /* Splash Screen Animation */
+        #splash { transition: opacity 0.5s ease-out, visibility 0.5s; }
+        .slide-up { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    /* STOREFRONT GRID */
-    .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 20px; }
-    .store-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.1s; }
-    .store-card:active { transform: scale(0.98); }
-    .store-img-box { width: 100%; height: 140px; background: #f9fafb; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .store-img { width: 100%; height: 100%; object-fit: cover; }
-    .store-info { padding: 12px; }
-    .store-title { font-weight: 600; font-size: 13px; margin-bottom: 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #1f2937; }
-    .store-footer { display: flex; justify-content: space-between; align-items: center; }
-    .store-price { font-weight: 700; color: #6200ea; font-size: 14px; }
-    .store-btn { background: #ede9fe; color: #6200ea; border: none; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
-
-    /* BOTTOM NAV */
-    .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #f3f4f6; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.02); }
-    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9ca3af; background: none; border: none; width: 100%; cursor: pointer; }
-    .nav-item .material-icons-round { font-size: 24px; margin-bottom: 4px; }
-    .nav-item span { font-size: 10px; font-weight: 500; }
-    .nav-item.active { color: #6200ea; }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .clean-mode .no-print { display: none !important; }
-  </style>
+        /* Canvas Signature */
+        canvas { touch-action: none; }
+        
+        /* SweetAlert Custom Overrides for Tailwind Feel */
+        div:where(.swal2-container) div:where(.swal2-popup) { border-radius: 1.5rem; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .swal2-input, .swal2-textarea { border-radius: 0.75rem !important; border: 1px solid #e2e8f0 !important; box-shadow: none !important; transition: all 0.2s; }
+        .swal2-input:focus, .swal2-textarea:focus { border-color: #4f46e5 !important; ring: 2px solid #e0e7ff !important; }
+    </style>
 </head>
 
-<body>
-  
-  <div id="splash-screen">
-    <span class="material-icons-round splash-logo">receipt_long</span>
-    <div class="splash-text">Billing App Pro</div>
-    <div class="splash-loader"></div>
-  </div>
+<body class="bg-background text-slate-800 h-screen flex flex-col overflow-hidden">
 
-  <div class="app-bar">
-    <div style="display:flex; align-items:center;">
-      <span class="material-icons-round">receipt_long</span>
-      <h1>Billing App</h1>
-    </div>
-    <div class="help-btn" onclick="showTutorial()">
-      <span class="material-icons-round">help_outline</span>
-    </div>
-  </div>
-  
-  <div class="content">
-    
-    <!-- 1. STORE FRONT (NEW) -->
-    <div id="tab-store" class="tab-view active">
-       <div class="card" style="text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #6200ea 0%, #7c4dff 100%); color: white; border:none;">
-           <h2 id="dispShopName" style="font-size: 22px; font-weight: 700; margin-bottom: 5px;">My Shop</h2>
-           <p id="dispShopAddr" style="font-size: 12px; opacity: 0.9;">Business Location</p>
-       </div>
-       
-       <div style="margin: 20px 0 10px 5px; font-weight: 700; font-size: 14px; color: #6b7280; text-transform: uppercase;">All Products</div>
-       <div id="storeGrid" class="store-grid"></div>
+    <div id="splash" class="fixed inset-0 bg-primary z-[9999] flex flex-col items-center justify-center text-white">
+        <div class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-xl mb-6 slide-up">
+            <span class="material-icons-round text-5xl text-primary">receipt_long</span>
+        </div>
+        <h1 class="text-3xl font-bold tracking-tight slide-up" style="animation-delay: 0.1s">Billing Pro</h1>
+        <p class="text-indigo-200 mt-2 font-medium slide-up" style="animation-delay: 0.2s">Enterprise V7</p>
     </div>
 
-    <!-- 2. SETUP TAB -->
-    <div id="tab-setup" class="tab-view">
-      <div class="card">
-        <h3>Store Profile</h3>
-        <div class="input-group">
-          <label>Shop Name</label>
-          <input type="text" id="shopName" placeholder="Business Name" onblur="saveData()">
-        </div>
-        <div class="input-group">
-          <label>Address & Phone</label>
-          <textarea id="shopAddr" rows="3" placeholder="Address..." onblur="saveData()"></textarea>
-        </div>
-        <button class="btn" onclick="saveData(true)">Save Details</button>
-      </div>
-    </div>
-    
-    <!-- 3. ITEMS TAB -->
-    <div id="tab-items" class="tab-view">
-      <div class="card">
-        <h3>Add Product</h3>
-        <label class="file-upload">
-          <span class="material-icons-round">add_a_photo</span> Select Image
-          <input type="file" id="itemImg" accept="image/*">
-        </label>
-        <div id="imgPreview" style="font-size:11px; color:green; margin:5px 0; display:none; text-align:center;">Image Selected</div>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-          <div style="flex:2"><label>Name</label><input type="text" id="itemName"></div>
-          <div style="flex:1"><label>Price</label><input type="number" id="itemPrice"></div>
-        </div>
-        <button class="btn" onclick="addItem()" style="margin-top:10px;">Add</button>
-      </div>
-      <input type="text" id="searchInv" placeholder="🔍 Search Inventory..." oninput="filterInventory()" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:10px; margin-bottom:10px;">
-      <div id="inventoryList" style="background:white; border-radius:12px; padding:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05);"></div>
-    </div>
-    
-    <!-- 4. CART TAB -->
-    <div id="tab-cart" class="tab-view">
-      <div class="card">
-        <div class="input-group">
-          <label>Customer Name</label>
-          <input type="text" id="custName" placeholder="Client Name" onblur="renderCartList()">
-        </div>
-        <div class="input-group">
-          <label>Select Item</label>
-          <select id="prodSelect" onchange="fillPrice()"><option value="">-- Choose --</option></select>
-        </div>
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-          <div style="flex:1"><label>Price</label><input type="number" id="billPrice"></div>
-          <div style="flex:1"><label>Qty</label><input type="number" id="billQty" value="1"></div>
-        </div>
-        <button class="btn" onclick="addToBill()"><span class="material-icons-round">shopping_cart</span> Add to Cart</button>
-      </div>
-      <div id="cartListArea" style="background:white; border-radius:12px; padding:10px; margin-bottom:80px;"></div>
-      <div style="position:fixed; bottom:80px; left:16px; right:16px;">
-        <button class="btn" style="box-shadow: 0 4px 15px rgba(98,0,234,0.4);" onclick="watchAdAndGenerate()">
-          Generate Bill <span class="material-icons-round" style="font-size:16px; margin-left:5px;">arrow_forward</span>
-        </button>
-      </div>
-    </div>
-    
-    <!-- 5. PREVIEW TAB -->
-    <div id="tab-preview" class="tab-view">
-      <div style="margin-bottom:15px;">
-        <button class="btn btn-outline" style="width:auto; padding:8px 15px; font-size:12px;" onclick="goToCart()">
-          <span class="material-icons-round" style="font-size:14px;">arrow_back</span> Edit Cart
-        </button>
-      </div>
-      <div id="printArea" class="paper">
-        <div class="inv-head">
-          <div>
-            <div id="outName" style="font-size:16px; font-weight:800; text-transform:uppercase;">SHOP</div>
-            <div id="outAddr" style="color:#555; font-size:11px; margin-top:4px;">Addr</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-weight:bold;">INVOICE</div>
-            <div>#<span id="outInv">101</span></div>
-            <div style="color:#666; font-size:11px; cursor:pointer;" onclick="changeDate()">
-              <span id="outDate">Date</span>
+    <div id="overlay" onclick="toggleDrawer(false)" class="fixed inset-0 bg-slate-900/40 z-40 hidden backdrop-blur-sm transition-opacity opacity-0"></div>
+
+    <aside id="drawer" class="fixed inset-y-0 left-0 w-72 bg-surface z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col lg:translate-x-0 lg:static lg:shadow-none lg:border-r border-slate-200">
+        <div class="h-20 flex items-center px-8 border-b border-slate-100">
+            <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary mr-3">
+                <span class="material-icons-round text-2xl">store</span>
             </div>
-          </div>
+            <div>
+                <h2 class="font-bold text-lg leading-tight" id="sidebar-shop">My Shop</h2>
+                <div class="text-xs text-slate-400 font-medium">Dashboard</div>
+            </div>
         </div>
-        <div style="margin-bottom:10px; border-bottom:1px dashed #ccc; padding-bottom:5px;">
-          <span style="font-size:10px; color:#888;">BILL TO:</span> <b id="outClient">Customer</b>
-        </div>
-        <table class="bill-table">
-          <thead><tr><th class="col-sn">S.No</th><th class="col-img">Img</th><th class="col-nm">Item</th><th class="col-qt">Qty</th><th class="col-pr">Price</th><th class="col-tt">Total</th></tr></thead>
-          <tbody id="billBody"></tbody>
-        </table>
-        <div style="margin-top:20px; text-align:right; font-size:16px; font-weight:800; border-top:2px solid #000; padding-top:10px;">
-          Total: <span id="outTotal">0.00</span>
-        </div>
-      </div>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <button class="btn btn-outline" onclick="saveAndNew()">Save & New</button>
-        <button class="btn" onclick="checkPermissionAndDownload()">Download</button>
-      </div>
-    </div>
-    
-    <!-- 6. HISTORY TAB -->
-    <div id="tab-history" class="tab-view">
-      <div class="card">
-        <h3>History</h3>
-        <input type="text" id="searchHistory" placeholder="Search..." oninput="filterHistory()" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px;">
-        <div id="historyList"></div>
-      </div>
-      <button class="btn btn-danger" onclick="clearHistory()">Clear All</button>
-    </div>
-    
-  </div>
-  
-  <!-- BOTTOM NAVIGATION -->
-  <div class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('tab-store', this)">
-        <span class="material-icons-round">storefront</span><span>Store</span>
-    </button>
-    <button class="nav-item" onclick="switchTab('tab-cart', this)">
-        <span class="material-icons-round">shopping_cart</span><span>Cart</span>
-    </button>
-    <button class="nav-item" onclick="switchTab('tab-items', this)">
-        <span class="material-icons-round">inventory_2</span><span>Items</span>
-    </button>
-    <button class="nav-item" onclick="switchTab('tab-history', this)">
-        <span class="material-icons-round">history</span><span>History</span>
-    </button>
-    <button class="nav-item" onclick="switchTab('tab-setup', this)">
-        <span class="material-icons-round">settings</span><span>Setup</span>
-    </button>
-  </div>
-  
-  <script>
-    // --- APP CONFIG ---
-    const ADMOB_APP_ID = "ca-app-pub-8360942174797973~8738643442";
-    const ADMOB_UNIT_ID = "ca-app-pub-8360942174797973/2001844707";
-    let isAdReady = false;
 
-    const app = {
-      inventory: JSON.parse(localStorage.getItem('billing_inv')) || [],
-      cart: [],
-      invNo: parseInt(localStorage.getItem('billing_invNo')) || 101,
-      history: JSON.parse(localStorage.getItem('billing_hist')) || [],
-      date: new Date().toLocaleDateString('en-GB')
-    };
+        <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+            <button onclick="nav('tab-store')" class="nav-item w-full flex items-center px-4 py-3.5 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:bg-slate-50 hover:text-primary">
+                <span class="material-icons-round text-xl mr-3 opacity-70">storefront</span> Store
+            </button>
+            <button onclick="nav('tab-cart')" class="nav-item w-full flex items-center px-4 py-3.5 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:bg-slate-50 hover:text-primary relative">
+                <span class="material-icons-round text-xl mr-3 opacity-70">shopping_cart</span> Cart
+                <span id="badge-desktop" class="absolute right-4 bg-danger text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+            </button>
+            <button onclick="nav('tab-items')" class="nav-item w-full flex items-center px-4 py-3.5 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:bg-slate-50 hover:text-primary">
+                <span class="material-icons-round text-xl mr-3 opacity-70">inventory_2</span> Inventory
+            </button>
+            <button onclick="nav('tab-analytics')" class="nav-item w-full flex items-center px-4 py-3.5 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:bg-slate-50 hover:text-primary">
+                <span class="material-icons-round text-xl mr-3 opacity-70">insights</span> Analytics
+            </button>
+            <button onclick="nav('tab-history')" class="nav-item w-full flex items-center px-4 py-3.5 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:bg-slate-50 hover:text-primary">
+                <span class="material-icons-round text-xl mr-3 opacity-70">history</span> History
+            </button>
+            <div class="my-4 border-t border-slate-100"></div>
+            <button onclick="nav('tab-settings')" class="nav-item w-full flex items-center px-4 py-3.5 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:bg-slate-50 hover:text-primary">
+                <span class="material-icons-round text-xl mr-3 opacity-70">settings</span> Settings
+            </button>
+        </nav>
+    </aside>
 
-    // --- STARTUP LOGIC ---
-    window.onload = () => {
-      setTimeout(() => {
-        document.getElementById('splash-screen').style.opacity = '0';
-        setTimeout(() => document.getElementById('splash-screen').style.visibility = 'hidden', 500);
-        requestStoragePermission();
-      }, 2500);
+    <div class="flex-1 flex flex-col h-full relative">
+        
+        <header class="h-16 bg-surface/90 backdrop-blur border-b border-slate-200 flex items-center justify-between px-4 lg:hidden z-30 sticky top-0">
+            <button onclick="toggleDrawer(true)" class="p-2 rounded-lg text-slate-600 active:bg-slate-100">
+                <span class="material-icons-round text-2xl">menu</span>
+            </button>
+            <span class="font-bold text-lg text-slate-800">Billing Pro</span>
+            <button onclick="nav('tab-settings')" class="p-2 rounded-lg text-slate-600 active:bg-slate-100">
+                <span class="material-icons-round text-2xl">settings</span>
+            </button>
+        </header>
 
-      // Load Saved Data
-      const shopName = localStorage.getItem('billing_name') || "";
-      const shopAddr = localStorage.getItem('billing_addr') || "";
-      document.getElementById('shopName').value = shopName;
-      document.getElementById('shopAddr').value = shopAddr;
-
-      // Init Views
-      renderStoreFront();
-      renderInventoryList();
-      renderCartList();
-      renderHistory(app.history);
-      
-      // Init Plugins
-      document.addEventListener('deviceready', () => {
-          initAdMob();
-      }, false);
-    };
-
-    // --- STORE FRONT LOGIC (NEW) ---
-    function renderStoreFront() {
-        // Update Headers
-        const sName = document.getElementById('shopName').value || "My Online Shop";
-        const sAddr = document.getElementById('shopAddr').value || "Location not set";
-        document.getElementById('dispShopName').innerText = sName;
-        document.getElementById('dispShopAddr').innerText = sAddr;
-
-        const grid = document.getElementById('storeGrid');
-        grid.innerHTML = "";
-
-        if (app.inventory.length === 0) {
-            grid.innerHTML = `<div style="grid-column: span 2; text-align: center; color: #9ca3af; padding: 40px; font-size: 13px;">No items in inventory.<br>Go to 'Items' tab to add products.</div>`;
-            return;
-        }
-
-        app.inventory.forEach(item => {
-            const imgHtml = item.img 
-                ? `<img src="${item.img}" class="store-img">` 
-                : `<div class="store-img-box"><span class="material-icons-round" style="font-size:32px; color:#ddd;">image</span></div>`;
+        <main class="flex-1 overflow-y-auto p-4 lg:p-8 pb-24 scroll-smooth" id="main-scroll">
             
-            // If item has image property but it's not base64/url, handle gracefully
-            const displayImg = item.img ? `<div class="store-img-box"><img src="${item.img}" class="store-img"></div>` : `<div class="store-img-box"><span class="material-icons-round" style="font-size:32px; color:#ddd;">image</span></div>`;
+            <div id="tab-store" class="view-section animate-fade">
+                <div id="store-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
+                    </div>
+            </div>
 
-            const card = document.createElement('div');
-            card.className = "store-card";
-            card.innerHTML = `
-                ${displayImg}
-                <div class="store-info">
-                    <div class="store-title">${item.n}</div>
-                    <div class="store-footer">
-                        <div class="store-price">₹${item.p}</div>
-                        <button class="store-btn" onclick="quickAddToCart('${item.n}', ${item.p})">ADD</button>
+            <div id="tab-cart" class="view-section hidden animate-fade max-w-3xl mx-auto">
+                <div class="bg-surface rounded-2xl shadow-card p-5 mb-4 border border-slate-100">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Customer Info</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input id="c-name" placeholder="Customer Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
+                        <input id="c-phone" type="number" placeholder="Phone Number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
+                    </div>
+                    <textarea id="c-addr" rows="2" placeholder="Billing Address" class="w-full mt-4 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition resize-none"></textarea>
+                </div>
+
+                <div id="manual-btn-area" class="mb-4">
+                    <button onclick="openManualAdd()" class="w-full py-3.5 border-2 border-dashed border-primary/30 rounded-2xl text-primary font-bold text-sm hover:bg-primary/5 active:bg-primary/10 transition flex items-center justify-center gap-2">
+                        <span class="material-icons-round">add_circle</span> Add Custom Item
+                    </button>
+                </div>
+
+                <div id="cart-list" class="space-y-3 pb-24"></div>
+
+                <div id="checkout-bar" class="fixed bottom-20 lg:bottom-8 left-4 right-4 lg:left-auto lg:right-8 lg:w-96 bg-slate-900 text-white p-4 rounded-2xl shadow-xl z-30 flex items-center justify-between hidden">
+                    <div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Total Payable</div>
+                        <div class="text-xl font-bold">₹<span id="cart-total">0.00</span></div>
+                    </div>
+                    <button onclick="generateBill()" class="bg-white text-slate-900 px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-100 active:scale-95 transition flex items-center gap-2 shadow-lg">
+                        Checkout <span class="material-icons-round text-base">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="tab-items" class="view-section hidden animate-fade">
+                <div class="flex gap-3 mb-6 sticky top-0 bg-background/95 backdrop-blur z-20 py-2">
+                    <div class="relative flex-1">
+                        <span class="material-icons-round absolute left-3.5 top-3.5 text-slate-400">search</span>
+                        <input id="inv-search" oninput="renderInventory()" type="text" placeholder="Search products..." class="w-full pl-11 pr-4 py-3 bg-surface border-none shadow-soft rounded-xl text-sm focus:ring-2 focus:ring-primary transition">
+                    </div>
+                    <button onclick="openItemModal()" class="w-12 h-12 flex items-center justify-center bg-primary text-white rounded-xl shadow-lg shadow-primary/30 hover:bg-primaryDark active:scale-95 transition">
+                        <span class="material-icons-round">add</span>
+                    </button>
+                </div>
+                <div id="inv-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div id="tab-analytics" class="view-section hidden animate-fade max-w-4xl mx-auto">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-surface p-5 rounded-2xl shadow-card">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Revenue</div>
+                        <div class="text-2xl font-bold text-slate-800 mt-1" id="an-rev">₹0</div>
+                    </div>
+                    <div class="bg-surface p-5 rounded-2xl shadow-card">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cost</div>
+                        <div class="text-2xl font-bold text-slate-500 mt-1" id="an-cost">₹0</div>
+                    </div>
+                    <div class="col-span-2 bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-2xl text-white shadow-lg shadow-emerald-200">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="text-xs font-bold text-emerald-100 uppercase tracking-widest">Net Profit</div>
+                                <div class="text-4xl font-extrabold mt-1" id="an-profit">₹0</div>
+                            </div>
+                            <div class="bg-white/20 backdrop-blur px-3 py-1 rounded-lg text-xs font-bold">
+                                Margin: <span id="an-margin">0%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            `;
-            grid.appendChild(card);
-        });
-    }
+                <div class="bg-surface rounded-2xl shadow-card p-6">
+                    <h3 class="text-sm font-bold text-slate-800 mb-4">Stock Valuation</h3>
+                    <div class="flex justify-between py-3 border-b border-slate-50">
+                        <span class="text-sm text-slate-500">Asset Value (Cost)</span>
+                        <span class="font-bold text-slate-800" id="an-asset">₹0</span>
+                    </div>
+                    <div class="flex justify-between py-3">
+                        <span class="text-sm text-slate-500">Potential Sales</span>
+                        <span class="font-bold text-slate-800" id="an-pot">₹0</span>
+                    </div>
+                </div>
+            </div>
 
-    function quickAddToCart(name, price) {
-        // Find existing or add new
-        const ex = app.cart.find(c => c.nm === name);
-        const item = app.inventory.find(i => i.n === name);
-        const img = item ? item.img : null;
+            <div id="tab-history" class="view-section hidden animate-fade">
+                <div class="flex p-1 bg-slate-200/50 rounded-xl mb-6">
+                    <button onclick="toggleHist('all')" id="btn-h-all" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white shadow-sm text-primary">All Bills</button>
+                    <button onclick="toggleHist('club')" id="btn-h-club" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-500 hover:bg-white/50">By Customer</button>
+                </div>
+                <input id="hist-search" oninput="renderHistory()" type="text" placeholder="Search History..." class="w-full mb-4 px-4 py-3 bg-surface border-none shadow-soft rounded-xl text-sm focus:ring-2 focus:ring-primary transition">
+                <div id="hist-list" class="space-y-3"></div>
+                
+                <div class="mt-8 text-center">
+                    <button onclick="resetApp()" class="text-xs font-bold text-danger border border-danger/20 px-4 py-2 rounded-lg hover:bg-danger/5 transition">Reset Data</button>
+                </div>
+            </div>
 
-        if (ex) {
-            ex.qt += 1;
-            ex.tot = ex.qt * price;
-        } else {
-            app.cart.push({ nm: name, pr: price, qt: 1, tot: price, img: img });
-        }
-        
-        renderCartList();
-        
-        // Visual Feedback
-        Swal.fire({
-            icon: 'success',
-            title: 'Added to Cart',
-            text: `${name}`,
-            toast: true,
-            position: 'bottom',
-            showConfirmButton: false,
-            timer: 1000,
-            background: '#333',
-            color: '#fff'
-        });
-    }
+            <div id="tab-settings" class="view-section hidden animate-fade max-w-md mx-auto text-center">
+                <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 text-primary">
+                    <span class="material-icons-round text-4xl">store</span>
+                </div>
+                <h2 class="text-xl font-bold">Settings</h2>
+                <p class="text-sm text-slate-500 mb-8">Customize your experience</p>
 
-    // --- PERMISSIONS & DOWNLOAD ---
-    function requestStoragePermission() {
-      if (window.cordova && window.cordova.plugins && window.cordova.plugins.permissions) {
-        const perms = window.cordova.plugins.permissions;
-        perms.checkPermission(perms.WRITE_EXTERNAL_STORAGE, (status) => {
-          if (!status.hasPermission) {
-            perms.requestPermissions([perms.WRITE_EXTERNAL_STORAGE, perms.READ_EXTERNAL_STORAGE], null, null);
-          }
-        });
-      }
-    }
+                <div class="space-y-3 text-left">
+                    <div class="bg-surface p-4 rounded-2xl shadow-card flex items-center justify-between">
+                        <span class="text-sm font-bold text-slate-700">Show Manual Add Button</span>
+                        <div onclick="toggleManualBtn()" id="tog-man" class="w-11 h-6 bg-primary rounded-full relative cursor-pointer transition-colors">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-1 right-1 transition-all shadow-sm"></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="editShopDetails()" class="w-full bg-surface p-4 rounded-2xl shadow-card flex items-center justify-between hover:bg-slate-50 transition group">
+                        <span class="text-sm font-bold text-slate-700">Business Details</span>
+                        <span class="material-icons-round text-slate-300 group-hover:text-primary transition">chevron_right</span>
+                    </button>
 
-    function checkPermissionAndDownload() {
-      if (window.cordova && window.cordova.plugins && window.cordova.plugins.permissions) {
-        const perms = window.cordova.plugins.permissions;
-        perms.checkPermission(perms.WRITE_EXTERNAL_STORAGE, (status) => {
-          if (status.hasPermission) {
-            downloadImg();
-          } else {
-            perms.requestPermission(perms.WRITE_EXTERNAL_STORAGE, downloadImg, 
-              () => Swal.fire('Error', 'Storage permission needed.', 'error')
-            );
-          }
-        });
-      } else {
-        downloadImg();
-      }
-    }
+                    <button onclick="openSignature()" class="w-full bg-surface p-4 rounded-2xl shadow-card flex items-center justify-between hover:bg-slate-50 transition group">
+                        <span class="text-sm font-bold text-slate-700">Digital Signature</span>
+                        <span class="material-icons-round text-slate-300 group-hover:text-primary transition">chevron_right</span>
+                    </button>
 
-    function downloadImg() {
-      const e = document.getElementById('printArea');
-      e.classList.add('clean-mode');
-      Swal.fire({ title: 'Processing...', didOpen: () => Swal.showLoading() });
-      
-      html2canvas(e, { scale: 2, useCORS: true }).then(canvas => {
-        const base64 = canvas.toDataURL('image/png');
-        const fileName = `Bill_${document.getElementById('outInv').innerText}_${Date.now()}.png`;
+                    <button onclick="startTour()" class="w-full bg-surface p-4 rounded-2xl shadow-card flex items-center justify-between hover:bg-slate-50 transition group">
+                        <span class="text-sm font-bold text-slate-700">Replay Tutorial</span>
+                        <span class="material-icons-round text-slate-300 group-hover:text-primary transition">help_outline</span>
+                    </button>
+                </div>
+            </div>
 
-        if (window.cordova && window.cordova.file) {
-          saveToAndroid(base64, fileName);
-        } else {
-          const a = document.createElement('a');
-          a.download = fileName;
-          a.href = base64;
-          a.click();
-          finishDownload();
-        }
-      });
-    }
+        </main>
 
-    function saveToAndroid(base64, fileName) {
-      const path = cordova.file.externalRootDirectory + "Download/";
-      window.resolveLocalFileSystemURL(path, function(dir) {
-        dir.getFile(fileName, { create: true }, function(fileEntry) {
-          fileEntry.createWriter(function(fileWriter) {
-            fileWriter.onwriteend = () => {
-                finishDownload();
-                if(window.MediaScannerPlugin) window.MediaScannerPlugin.scanFile(path + fileName);
-            };
-            fileWriter.onerror = (e) => Swal.fire('Error', 'Save failed: ' + e.toString(), 'error');
+        <nav class="lg:hidden fixed bottom-0 w-full bg-surface/90 backdrop-blur-lg border-t border-slate-200 flex justify-around py-1 pb-[env(safe-area-inset-bottom)] z-40">
+            <button onclick="nav('tab-store')" class="nav-mobile p-2 text-slate-400 hover:text-primary flex flex-col items-center">
+                <span class="material-icons-round text-2xl mb-0.5">storefront</span>
+                <span class="text-[10px] font-medium">Store</span>
+            </button>
+            <button onclick="nav('tab-cart')" class="nav-mobile p-2 text-slate-400 hover:text-primary flex flex-col items-center relative">
+                <span class="material-icons-round text-2xl mb-0.5">shopping_cart</span>
+                <span class="text-[10px] font-medium">Cart</span>
+                <span id="badge-mobile" class="absolute top-1 right-3 bg-danger text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full hidden">0</span>
+            </button>
+            <button onclick="nav('tab-items')" class="nav-mobile p-2 text-slate-400 hover:text-primary flex flex-col items-center">
+                <span class="material-icons-round text-2xl mb-0.5">inventory_2</span>
+                <span class="text-[10px] font-medium">Items</span>
+            </button>
+            <button onclick="nav('tab-history')" class="nav-mobile p-2 text-slate-400 hover:text-primary flex flex-col items-center">
+                <span class="material-icons-round text-2xl mb-0.5">history</span>
+                <span class="text-[10px] font-medium">History</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <div id="preview-modal" class="fixed inset-0 z-[60] bg-background hidden flex flex-col">
+        <div class="h-16 bg-surface border-b border-slate-200 flex items-center justify-between px-4 shrink-0">
+            <button onclick="closePreview()" class="flex items-center text-sm font-bold text-slate-600 hover:text-primary">
+                <span class="material-icons-round mr-1">arrow_back</span> Back
+            </button>
+            <span class="font-bold text-slate-800">Invoice Preview</span>
+            <div class="w-10"></div> </div>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-8">
+            <div id="invoice-paper" class="bg-white max-w-xl mx-auto p-6 md:p-10 shadow-xl rounded-sm text-slate-800 text-xs md:text-sm leading-relaxed relative">
+                
+                <div class="flex justify-between items-start border-b border-slate-100 pb-6 mb-6">
+                    <div>
+                        <h1 id="inv-shop" class="text-xl font-extrabold text-primary uppercase tracking-tight">Shop Name</h1>
+                        <p id="inv-addr" class="text-slate-500 mt-1 whitespace-pre-line">Address</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-slate-400 font-bold text-[10px] uppercase tracking-wider">Invoice #</div>
+                        <div class="text-lg font-bold" id="inv-id">1001</div>
+                        <div class="text-slate-500 mt-1" id="inv-date">--/--/--</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-lg mb-6 border border-slate-100">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bill To</div>
+                    <div class="font-bold text-base text-slate-800" id="inv-client">Client Name</div>
+                    <div class="text-slate-500" id="inv-client-addr">Address</div>
+                </div>
+
+                <table class="w-full mb-8">
+                    <thead>
+                        <tr class="border-b-2 border-slate-100">
+                            <th class="text-left py-2 font-bold text-slate-500 w-1/2">Item</th>
+                            <th class="text-center py-2 font-bold text-slate-500">Qty</th>
+                            <th class="text-right py-2 font-bold text-slate-500">Price</th>
+                            <th class="text-right py-2 font-bold text-slate-500">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inv-body" class="divide-y divide-slate-50"></tbody>
+                </table>
+
+                <div class="flex justify-end border-t-2 border-slate-800 pt-4 mb-8">
+                    <div class="text-right">
+                        <div class="text-2xl font-extrabold text-slate-900">Total: ₹<span id="inv-total">0.00</span></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-end">
+                    <div class="w-1/2">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase">Notes</div>
+                        <p id="inv-note" class="text-slate-500 italic mt-1">Thank you.</p>
+                    </div>
+                    <div class="text-center">
+                        <div id="inv-sign" class="h-12 flex items-end justify-center mb-1"></div>
+                        <div class="border-t border-slate-300 w-32 mx-auto pt-1 text-[10px] font-bold text-slate-400 uppercase">Authorized Signatory</div>
+                    </div>
+                </div>
+            </div>
             
-            const data = atob(base64.split(',')[1]);
-            const bytes = new Uint8Array(data.length);
-            for (let i = 0; i < data.length; i++) bytes[i] = data.charCodeAt(i);
-            const blob = new Blob([bytes], { type: 'image/png' });
-            
-            fileWriter.write(blob);
-          });
-        });
-      }, (err) => Swal.fire('Error', 'Folder access error', 'error'));
-    }
+            <div id="inv-actions-new" class="max-w-xl mx-auto grid grid-cols-2 gap-4 mt-6 pb-10">
+                <button onclick="finishBill(false)" class="py-3.5 rounded-xl border font-bold text-slate-600 bg-white hover:bg-slate-50">Save Only</button>
+                <button onclick="finishBill(true)" class="py-3.5 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 hover:bg-primaryDark">Save & Download</button>
+            </div>
+            <div id="inv-actions-hist" class="max-w-xl mx-auto mt-6 pb-10 hidden">
+                 <button onclick="downloadInvoice()" class="w-full py-3.5 rounded-xl bg-primary text-white font-bold shadow-lg">Download Image</button>
+            </div>
+        </div>
+    </div>
 
-    function finishDownload() {
-      document.getElementById('printArea').classList.remove('clean-mode');
-      Swal.fire({ icon: 'success', title: 'Saved to Downloads', timer: 1500, showConfirmButton: false });
-    }
-
-    // --- ADS & GENERATE ---
-    function initAdMob() {
-      if (typeof admob !== 'undefined') {
-        admob.setOptions({ publisherId: ADMOB_APP_ID, interstitialAdId: ADMOB_UNIT_ID, autoShow: false });
-        admob.rewardvideo.prepare();
-        document.addEventListener('admob.rewardvideo.events.LOAD', () => { isAdReady = true; });
-        document.addEventListener('admob.rewardvideo.events.CLOSE', () => { admob.rewardvideo.prepare(); goToPreview(); });
-      }
-    }
-
-    function watchAdAndGenerate() {
-      if (app.cart.length === 0) return Swal.fire({ icon: 'info', text: 'Cart is empty' });
-      if (typeof admob !== 'undefined') {
-        Swal.fire({ title: 'Generate Bill?', confirmButtonText: 'Watch Ad', showCancelButton: true }).then((r) => {
-          if (r.isConfirmed) admob.rewardvideo.show();
-        });
-      } else {
-        goToPreview();
-      }
-    }
-
-    // --- UI HELPERS ---
-    function switchTab(id, btn) {
-      document.querySelectorAll('.tab-view').forEach(e => e.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      if (btn) btn.classList.add('active');
-      
-      // Auto-refresh storefront when clicking "Store" tab
-      if (id === 'tab-store') renderStoreFront();
-    }
-
-    function saveData(popup = false) {
-      localStorage.setItem('billing_name', document.getElementById('shopName').value);
-      localStorage.setItem('billing_addr', document.getElementById('shopAddr').value);
-      if (popup) {
-          Swal.fire({ icon: 'success', title: 'Saved', timer: 1000, showConfirmButton: false });
-          renderStoreFront(); // Update store view immediately
-      }
-    }
-    
-    function showTutorial() {
-      Swal.fire({ title: 'Guide', html: '1. Setup Shop<br>2. Add Items<br>3. Make Bill', confirmButtonColor: '#6200ea' });
-    }
-
-    async function addItem() {
-      const n = document.getElementById('itemName').value;
-      const p = document.getElementById('itemPrice').value;
-      const f = document.getElementById('itemImg').files[0];
-      if (!n || !p) return Swal.fire({ icon: 'warning', text: 'Missing details' });
-      let img = null;
-      if (f) img = await resizeImage(f);
-      app.inventory.push({ n, p, img });
-      localStorage.setItem('billing_inv', JSON.stringify(app.inventory));
-      document.getElementById('itemName').value = "";
-      document.getElementById('itemPrice').value = "";
-      document.getElementById('itemImg').value = "";
-      document.getElementById('imgPreview').style.display = 'none';
-      renderInventoryList();
-      Swal.fire({ icon: 'success', title: 'Added', timer: 1000, showConfirmButton: false });
-    }
-
-    function resizeImage(file) {
-      return new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          const img = new Image();
-          img.onload = () => {
-            const c = document.createElement('canvas');
-            c.width = 80; c.height = 80;
-            c.getContext('2d').drawImage(img, 0, 0, 80, 80);
-            resolve(c.toDataURL('image/jpeg', 0.6));
-          };
-          img.src = e.target.result;
+    <script>
+        // --- CORE STATE ---
+        const app = {
+            data: {
+                inv: JSON.parse(localStorage.getItem('bp7_inv')) || [],
+                hist: JSON.parse(localStorage.getItem('bp7_hist')) || [],
+                cart: [],
+                count: parseInt(localStorage.getItem('bp7_cnt')) || 1001,
+                sets: JSON.parse(localStorage.getItem('bp7_sets')) || {
+                    name: 'My Shop', addr: 'New Delhi, India', note: 'Thank you for your business.',
+                    sign: null, showMan: true, tourDone: false
+                }
+            },
+            ui: { tab: 'tab-store', imgs: [] }
         };
-        reader.readAsDataURL(file);
-      });
-    }
 
-    function renderInventoryList() {
-      const listArea = document.getElementById('inventoryList');
-      const sel = document.getElementById('prodSelect');
-      const term = document.getElementById('searchInv').value.toLowerCase();
-      const filtered = app.inventory.filter(i => i.n.toLowerCase().includes(term));
-      
-      sel.innerHTML = "<option value=''>-- Select --</option>";
-      app.inventory.forEach(i => sel.innerHTML += `<option value="${i.p}">${i.n}</option>`);
+        // --- INIT ---
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                document.getElementById('splash').style.visibility = 'hidden';
+                if(!app.data.sets.tourDone) startTour();
+            }, 2000); // 2 sec splash
+            renderAll();
+            updateSettingsUI();
+        };
 
-      if (filtered.length === 0) return listArea.innerHTML = "<div style='text-align:center;color:#999'>No items</div>";
-      
-      let html = `<table class="data-table"><thead><tr><th>Img</th><th>Item</th><th>Price</th><th>Act</th></tr></thead><tbody>`;
-      filtered.forEach((i) => {
-        const idx = app.inventory.indexOf(i);
-        const img = i.img ? `<img src="${i.img}" class="thumb-img">` : `📷`;
-        html += `<tr><td>${img}</td><td>${i.n}</td><td>${i.p}</td><td><span class="material-icons-round" style="color:red" onclick="delItem(${idx})">delete</span></td></tr>`;
-      });
-      listArea.innerHTML = html + "</tbody></table>";
-    }
+        function save() {
+            localStorage.setItem('bp7_inv', JSON.stringify(app.data.inv));
+            localStorage.setItem('bp7_hist', JSON.stringify(app.data.hist));
+            localStorage.setItem('bp7_cnt', app.data.count);
+            localStorage.setItem('bp7_sets', JSON.stringify(app.data.sets));
+            renderAll();
+        }
 
-    function delItem(i) {
-      if (confirm("Delete?")) { app.inventory.splice(i, 1); localStorage.setItem('billing_inv', JSON.stringify(app.inventory)); renderInventoryList(); }
-    }
+        // --- NAVIGATION ---
+        function nav(id) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            window.scrollTo(0,0);
+            
+            // Sidebar Styling
+            document.querySelectorAll('.nav-item').forEach(b => {
+                b.classList.remove('bg-slate-50', 'text-primary');
+                b.classList.add('text-slate-600');
+            });
+            // Mobile Nav Styling
+            document.querySelectorAll('.nav-mobile').forEach(b => b.classList.remove('text-primary'));
+            
+            // Highlight Active
+            const idx = ['tab-store','tab-cart','tab-items','tab-analytics','tab-history','tab-settings'].indexOf(id);
+            if(idx > -1) {
+                if(document.querySelectorAll('.nav-item')[idx]) {
+                    document.querySelectorAll('.nav-item')[idx].classList.add('bg-slate-50', 'text-primary');
+                    document.querySelectorAll('.nav-item')[idx].classList.remove('text-slate-600');
+                }
+                if(document.querySelectorAll('.nav-mobile')[idx]) {
+                    document.querySelectorAll('.nav-mobile')[idx].classList.add('text-primary');
+                }
+            }
+            toggleDrawer(false);
+        }
 
-    function filterInventory() { renderInventoryList(); }
-    function fillPrice() { document.getElementById('billPrice').value = document.getElementById('prodSelect').value; }
+        function toggleDrawer(show) {
+            const d = document.getElementById('drawer');
+            const o = document.getElementById('overlay');
+            if(show) { d.classList.remove('-translate-x-full'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); }
+            else { d.classList.add('-translate-x-full'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); }
+        }
 
-    function addToBill() {
-      const sel = document.getElementById('prodSelect');
-      const nm = sel.options[sel.selectedIndex].text;
-      const pr = parseFloat(document.getElementById('billPrice').value);
-      const qt = parseFloat(document.getElementById('billQty').value);
-      if (!pr || !qt || sel.value === "") return;
-      const item = app.inventory.find(i => i.n === nm);
-      app.cart.push({ nm, pr, qt, tot: pr * qt, img: item ? item.img : null });
-      renderCartList();
-    }
+        function renderAll() {
+            renderStore(); renderCart(); renderInv(); renderAnalytics(); renderHist();
+        }
 
-    function renderCartList() {
-      const d = document.getElementById('cartListArea');
-      if (app.cart.length === 0) return d.innerHTML = "<div style='text-align:center;color:#999;padding:20px'>Empty</div>";
-      let html = `<table class="data-table"><thead><tr><th>Item</th><th>Qty</th><th>Tot</th><th>Del</th></tr></thead><tbody>`;
-      app.cart.forEach((c, i) => {
-        html += `<tr><td>${c.nm}</td><td>${c.qt}</td><td>${c.tot}</td><td><span class="material-icons-round" style="color:red" onclick="remCart(${i})">delete</span></td></tr>`;
-      });
-      d.innerHTML = html + "</tbody></table>";
-    }
+        // --- STORE ---
+        function renderStore() {
+            const grid = document.getElementById('store-grid');
+            if(app.data.inv.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-20 text-slate-400"><span class="material-icons-round text-5xl mb-2 opacity-50">store_mall_directory</span><p>Inventory Empty</p></div>`;
+                return;
+            }
+            grid.innerHTML = app.data.inv.map((item, idx) => {
+                const inCart = app.data.cart.find(c => c.id === item.id);
+                const img = item.imgs[0] ? `<img src="${item.imgs[0]}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">` : `<div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300"><span class="material-icons-round text-4xl">image</span></div>`;
+                
+                const btn = inCart 
+                    ? `<div class="flex items-center bg-slate-800 text-white rounded-lg p-1 w-full justify-between"><button onclick="modCart('${item.id}',-1)" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded">-</button><span class="font-bold text-sm">${inCart.qty}</span><button onclick="modCart('${item.id}',1)" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded">+</button></div>`
+                    : `<button onclick="addCart(${idx})" class="w-full py-2.5 bg-primary/10 text-primary font-bold text-sm rounded-lg hover:bg-primary hover:text-white transition">Add to Cart</button>`;
 
-    function remCart(i) { app.cart.splice(i, 1); renderCartList(); }
+                return `
+                <div class="bg-surface rounded-2xl shadow-card border border-slate-100 overflow-hidden group relative flex flex-col h-full hover:shadow-soft transition-all">
+                    <button onclick="opts(${idx}, 'inv')" class="absolute top-2 right-2 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm text-slate-600 z-10"><span class="material-icons-round text-base">more_vert</span></button>
+                    <div class="aspect-square relative overflow-hidden">${img}</div>
+                    <div class="p-4 flex flex-col justify-between flex-1">
+                        <div><h3 class="font-bold text-slate-800 text-sm leading-tight line-clamp-2">${item.name}</h3><div class="text-xs text-slate-400 mt-1">Stock: ${item.stock}</div></div>
+                        <div class="mt-4"><div class="font-extrabold text-slate-900 mb-3 text-lg">₹${item.price}</div>${btn}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
 
-    function goToPreview() {
-      document.getElementById('outName').innerText = document.getElementById('shopName').value || "SHOP";
-      document.getElementById('outAddr').innerText = document.getElementById('shopAddr').value || "Address";
-      document.getElementById('outClient').innerText = document.getElementById('custName').value || "Customer";
-      document.getElementById('outInv').innerText = app.invNo;
-      document.getElementById('outDate').innerText = app.date;
-      
-      const b = document.getElementById('billBody');
-      b.innerHTML = "";
-      let tot = 0;
-      app.cart.forEach((c, i) => {
-        tot += c.tot;
-        const img = c.img ? `<img src="${c.img}" class="bill-img">` : '';
-        b.innerHTML += `<tr><td>${i+1}</td><td>${img}</td><td>${c.nm}</td><td>${c.qt}</td><td>${c.pr}</td><td style="text-align:right">${c.tot}</td></tr>`;
-      });
-      document.getElementById('outTotal').innerText = tot.toFixed(2);
-      switchTab('tab-preview');
-    }
+        // --- CART ---
+        function addCart(idx) {
+            const i = app.data.inv[idx];
+            app.data.cart.push({ id: i.id, name: i.name, price: i.price, cost: i.cost, qty: 1, imgs: i.imgs });
+            save(); toast('Added to Cart');
+        }
 
-    function goToCart() { switchTab('tab-cart', document.querySelector('.bottom-nav button:nth-child(2)')); } // Fixed index
+        function modCart(id, d) {
+            const c = app.data.cart.find(x => x.id === id);
+            if(c) { c.qty += d; if(c.qty <= 0) app.data.cart = app.data.cart.filter(x => x.id !== id); save(); }
+        }
 
-    function changeDate() {
-      Swal.fire({ html: '<input type="date" id="swalDate" class="swal2-input">', preConfirm: () => document.getElementById('swalDate').value }).then(res => {
-        if(res.value) { app.date = new Date(res.value).toLocaleDateString('en-GB'); goToPreview(); }
-      });
-    }
+        function renderCart() {
+            const list = document.getElementById('cart-list');
+            const totalEl = document.getElementById('cart-total');
+            const bar = document.getElementById('checkout-bar');
+            let tot = 0, cnt = 0;
 
-    function saveAndNew() {
-      const rec = { id: app.invNo, client: document.getElementById('custName').value || "Guest", date: app.date, total: document.getElementById('outTotal').innerText, items: [...app.cart] };
-      app.history.unshift(rec);
-      localStorage.setItem('billing_hist', JSON.stringify(app.history));
-      app.cart = []; app.invNo++; localStorage.setItem('billing_invNo', app.invNo);
-      app.date = new Date().toLocaleDateString('en-GB'); document.getElementById('custName').value = "";
-      renderCartList(); renderHistory(app.history); goToCart();
-    }
+            if(app.data.cart.length === 0) {
+                list.innerHTML = `<div class="text-center py-10 opacity-40"><span class="material-icons-round text-6xl">shopping_cart_checkout</span><p>Empty Cart</p></div>`;
+                bar.classList.add('hidden');
+            } else {
+                bar.classList.remove('hidden');
+                list.innerHTML = app.data.cart.map(c => {
+                    tot += c.price * c.qty; cnt += c.qty;
+                    const img = c.imgs && c.imgs[0] ? `<img src="${c.imgs[0]}" class="w-12 h-12 rounded-lg object-cover">` : `<div class="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center"><span class="material-icons-round text-slate-400 text-sm">edit</span></div>`;
+                    return `
+                    <div class="flex items-center gap-3 bg-surface p-3 rounded-2xl border border-slate-100 shadow-sm">
+                        ${img}
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-sm text-slate-800 truncate">${c.name}</div>
+                            <div class="text-xs text-slate-400 line-clamp-1">${c.desc||''}</div>
+                            <div class="text-xs font-bold text-primary">₹${c.price}</div>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-50 rounded-lg p-1">
+                            <button onclick="modCart('${c.id}',-1)" class="w-7 h-7 flex items-center justify-center bg-white shadow rounded text-slate-600">-</button>
+                            <span class="text-xs font-bold w-4 text-center">${c.qty}</span>
+                            <button onclick="modCart('${c.id}',1)" class="w-7 h-7 flex items-center justify-center bg-white shadow rounded text-slate-600">+</button>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            totalEl.innerText = tot.toFixed(2);
+            document.getElementById('badge-desktop').innerText = cnt;
+            document.getElementById('badge-mobile').innerText = cnt;
+            document.getElementById('badge-desktop').classList.toggle('hidden', cnt===0);
+            document.getElementById('badge-mobile').classList.toggle('hidden', cnt===0);
+        }
 
-    function renderHistory(data) {
-      const h = document.getElementById('historyList');
-      h.innerHTML = "";
-      data.forEach((r, i) => {
-        h.innerHTML += `<div class="history-item"><div><b>#${r.id}</b> ${r.client}<br><small>${r.date}</small></div><div style="text-align:right"><b>${r.total}</b><br><button class="btn-view" onclick="loadHist(${i})">VIEW</button></div></div>`;
-      });
-    }
+        function openManualAdd() {
+            app.ui.imgs = [];
+            Swal.fire({
+                title: 'Add Manual Item',
+                html: `
+                <div class="space-y-3">
+                    <div onclick="document.getElementById('m-file').click()" class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-50">
+                        <span class="material-icons-round text-3xl text-slate-300">add_photo_alternate</span>
+                        <p class="text-xs text-slate-400 font-bold mt-1">Add Images (Max 5)</p>
+                    </div>
+                    <input type="file" id="m-file" hidden multiple accept="image/*" onchange="handleImg(this)">
+                    <div id="swal-img-prev" class="flex gap-2 overflow-x-auto h-16 no-scrollbar"></div>
+                    <input id="m-n" class="swal2-input w-full" placeholder="Item Name">
+                    <textarea id="m-d" class="swal2-textarea w-full" placeholder="Description" rows="1"></textarea>
+                    <div class="grid grid-cols-2 gap-3"><input id="m-p" type="number" class="swal2-input" placeholder="Price"><input id="m-c" type="number" class="swal2-input" placeholder="Cost"></div>
+                </div>`,
+                confirmButtonColor: '#4f46e5', confirmButtonText: 'Add', showCancelButton: true,
+                preConfirm: () => {
+                    const n = document.getElementById('m-n').value, p = document.getElementById('m-p').value;
+                    if(!n || !p) return Swal.showValidationMessage('Name & Price required');
+                    return { id: 'm_'+Date.now(), name: n, desc: document.getElementById('m-d').value, price: parseFloat(p), cost: parseFloat(document.getElementById('m-c').value)||0, qty: 1, imgs: [...app.ui.imgs], isManual: true };
+                }
+            }).then(r => { if(r.isConfirmed) { app.data.cart.push(r.value); save(); } });
+        }
 
-    function loadHist(i) {
-      const r = app.history[i];
-      app.cart = [...r.items];
-      document.getElementById('custName').value = r.client;
-      app.invNo = r.id; app.date = r.date;
-      goToPreview(); document.getElementById('outInv').innerText = r.id;
-    }
+        // --- INVENTORY ---
+        function renderInv() {
+            const list = document.getElementById('inv-list');
+            const term = document.getElementById('inv-search').value.toLowerCase();
+            const filtered = app.data.inv.filter(i => i.name.toLowerCase().includes(term));
+            
+            if(filtered.length === 0) { list.innerHTML = `<div class="col-span-full text-center py-10 opacity-50">No Items Found</div>`; return; }
 
-    function filterHistory() {
-      const t = document.getElementById('searchHistory').value.toLowerCase();
-      renderHistory(app.history.filter(h => h.client.toLowerCase().includes(t) || h.id.toString().includes(t)));
-    }
+            list.innerHTML = filtered.map((item) => {
+                const idx = app.data.inv.indexOf(item);
+                const img = item.imgs[0] ? `<img src="${item.imgs[0]}" class="w-12 h-12 rounded bg-slate-100 object-cover">` : `<div class="w-12 h-12 bg-slate-100 rounded flex items-center justify-center text-slate-300"><span class="material-icons-round">image</span></div>`;
+                return `
+                <div class="bg-surface p-3 rounded-xl border border-slate-100 shadow-sm flex items-center gap-3 relative hover:shadow-md transition">
+                    <button onclick="opts(${idx}, 'inv')" class="absolute top-2 right-2 text-slate-400 hover:text-slate-800"><span class="material-icons-round">more_vert</span></button>
+                    ${img}
+                    <div>
+                        <div class="font-bold text-sm text-slate-800">${item.name}</div>
+                        <div class="text-xs text-slate-500">Stock: ${item.stock} | Cost: ${item.cost}</div>
+                        <div class="text-sm font-bold text-primary">₹${item.price}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
 
-    function clearHistory() {
-      if(confirm("Delete all?")) { app.history = []; localStorage.removeItem('billing_hist'); renderHistory([]); }
-    }
+        function openItemModal(idx = null) {
+            const isEdit = idx !== null;
+            const i = isEdit ? app.data.inv[idx] : { name:'', price:'', cost:'', stock:'', imgs:[] };
+            app.ui.imgs = [...i.imgs];
+            Swal.fire({
+                title: isEdit ? 'Edit Item' : 'New Item',
+                html: `
+                <div class="space-y-3">
+                    <div onclick="document.getElementById('i-file').click()" class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-50">
+                         <span class="material-icons-round text-3xl text-slate-300">collections</span>
+                         <p class="text-xs text-slate-400 font-bold mt-1">Images (Max 5)</p>
+                    </div>
+                    <input type="file" id="i-file" hidden multiple accept="image/*" onchange="handleImg(this)">
+                    <div id="swal-img-prev" class="flex gap-2 overflow-x-auto h-16 no-scrollbar"></div>
+                    <input id="i-n" class="swal2-input w-full" placeholder="Name" value="${i.name}">
+                    <div class="grid grid-cols-2 gap-3"><input id="i-p" type="number" class="swal2-input" placeholder="Price" value="${i.price}"><input id="i-c" type="number" class="swal2-input" placeholder="Cost" value="${i.cost}"></div>
+                    <input id="i-s" type="number" class="swal2-input w-full" placeholder="Stock" value="${i.stock}">
+                </div>`,
+                confirmButtonColor: '#4f46e5', confirmButtonText: 'Save', didOpen: renderImgs,
+                preConfirm: () => {
+                    const n = document.getElementById('i-n').value, p = document.getElementById('i-p').value;
+                    if(!n || !p) return Swal.showValidationMessage('Name & Price Required');
+                    return { id: isEdit ? i.id : 'i_'+Date.now(), name: n, price: parseFloat(p), cost: parseFloat(document.getElementById('i-c').value)||0, stock: parseInt(document.getElementById('i-s').value)||0, imgs: [...app.ui.imgs] };
+                }
+            }).then(r => {
+                if(r.isConfirmed) { if(isEdit) app.data.inv[idx] = r.value; else app.data.inv.push(r.value); save(); }
+            });
+        }
 
-    document.getElementById('itemImg').addEventListener('change', function() {
-      if (this.files[0]) document.getElementById('imgPreview').style.display = 'block';
-    });
-  </script>
+        function opts(idx, type) {
+            Swal.fire({
+                title: 'Actions', showDenyButton: true, showCancelButton: true, confirmButtonText: 'Edit', denyButtonText: 'Delete', confirmButtonColor: '#4f46e5', denyButtonColor: '#ef4444'
+            }).then(r => {
+                if(r.isConfirmed) openItemModal(idx);
+                if(r.isDenied) { app.data.inv.splice(idx, 1); save(); }
+            });
+        }
+
+        // --- IMAGES ---
+        async function handleImg(inp) {
+            if(inp.files) {
+                for(let f of Array.from(inp.files).slice(0, 5 - app.ui.imgs.length)) {
+                    app.ui.imgs.push(await resize(f));
+                }
+                renderImgs();
+            }
+        }
+        function resize(f) {
+            return new Promise(r => {
+                const rd = new FileReader();
+                rd.onload = e => { const i = new Image(); i.onload = () => {
+                    const c = document.createElement('canvas');
+                    let w = i.width, h = i.height; if(w>300){h*=300/w;w=300;} c.width=w; c.height=h;
+                    c.getContext('2d').drawImage(i,0,0,w,h); r(c.toDataURL('image/jpeg',0.6));
+                }; i.src = e.target.result; }; rd.readAsDataURL(f);
+            });
+        }
+        function renderImgs() {
+            document.getElementById('swal-img-prev').innerHTML = app.ui.imgs.map((s,i) => `<div class="relative w-16 h-16 flex-shrink-0"><img src="${s}" class="w-full h-full rounded border"><button onclick="rmImg(${i})" class="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded text-[10px]">X</button></div>`).join('');
+        }
+        window.rmImg = i => { app.ui.imgs.splice(i,1); renderImgs(); };
+
+        // --- BILLING ---
+        function generateBill() {
+            if(app.data.cart.length === 0) return;
+            const cName = document.getElementById('c-name').value || 'Cash Customer';
+            const cAddr = document.getElementById('c-addr').value || '';
+            const cPhone = document.getElementById('c-phone').value || '';
+            
+            // Fill Preview
+            document.getElementById('inv-shop').innerText = app.data.sets.name;
+            document.getElementById('inv-addr').innerText = app.data.sets.addr;
+            document.getElementById('inv-id').innerText = app.data.count;
+            document.getElementById('inv-date').innerText = new Date().toLocaleDateString();
+            document.getElementById('inv-client').innerText = cName;
+            document.getElementById('inv-client-addr').innerText = cAddr + (cPhone ? '\n' + cPhone : '');
+            
+            let tot = 0;
+            document.getElementById('inv-body').innerHTML = app.data.cart.map(c => {
+                tot += c.price * c.qty;
+                return `<tr><td class="py-2"><div class="font-bold text-slate-700">${c.name}</div><div class="text-[10px] text-slate-400">${c.desc||''}</div></td><td class="text-center py-2 text-slate-600">${c.qty}</td><td class="text-right py-2 text-slate-600">${c.price}</td><td class="text-right py-2 font-bold text-slate-800">${(c.price*c.qty).toFixed(2)}</td></tr>`;
+            }).join('');
+            
+            document.getElementById('inv-total').innerText = tot.toFixed(2);
+            document.getElementById('inv-note').innerText = app.data.sets.note;
+            document.getElementById('inv-sign').innerHTML = app.data.sets.sign ? `<img src="${app.data.sets.sign}" class="h-full object-contain">` : '';
+
+            document.getElementById('preview-modal').classList.remove('hidden');
+            document.getElementById('inv-actions-new').classList.remove('hidden');
+            document.getElementById('inv-actions-hist').classList.add('hidden');
+        }
+
+        function closePreview() { document.getElementById('preview-modal').classList.add('hidden'); }
+
+        function finishBill(dl) {
+            const tot = app.data.cart.reduce((a,b)=>a+b.price*b.qty,0);
+            const rec = {
+                id: app.data.count, date: new Date().toLocaleDateString(),
+                client: document.getElementById('c-name').value || 'Cash Customer',
+                addr: document.getElementById('c-addr').value, phone: document.getElementById('c-phone').value,
+                total: tot, items: JSON.parse(JSON.stringify(app.data.cart))
+            };
+            
+            // Stock
+            rec.items.forEach(c => { if(!c.isManual){ const i = app.data.inv.find(x=>x.id===c.id); if(i) i.stock = Math.max(0, i.stock - c.qty); }});
+            
+            app.data.hist.unshift(rec); app.data.count++; app.data.cart = [];
+            document.getElementById('c-name').value = ''; document.getElementById('c-addr').value = ''; document.getElementById('c-phone').value = '';
+            save(); closePreview();
+            
+            if(dl) downloadInvoice();
+            else toast('Bill Saved');
+        }
+
+        function downloadInvoice() {
+            // Need to temporarily show the modal content clearly or clone it
+            const el = document.getElementById('invoice-paper');
+            html2canvas(el, { scale: 2 }).then(cvs => {
+                const a = document.createElement('a'); a.download = `Inv_${document.getElementById('inv-id').innerText}.png`;
+                a.href = cvs.toDataURL(); a.click();
+            });
+        }
+
+        // --- HISTORY & ANALYTICS ---
+        function renderHist() {
+            const div = document.getElementById('hist-list');
+            const term = document.getElementById('hist-search').value.toLowerCase();
+            const view = document.getElementById('btn-h-club').classList.contains('text-primary') ? 'club' : 'all';
+            
+            if(app.data.hist.length === 0) { div.innerHTML = `<div class="text-center py-10 opacity-50">No History</div>`; return; }
+
+            const filtered = app.data.hist.filter(h => h.client.toLowerCase().includes(term) || h.id.toString().includes(term));
+
+            if(view === 'all') {
+                div.innerHTML = filtered.map(h => `
+                <div onclick="loadHist(${h.id})" class="bg-surface p-4 rounded-xl shadow-card border border-slate-100 flex justify-between items-center cursor-pointer hover:bg-slate-50">
+                    <div><div class="font-bold text-slate-800">#${h.id} • ${h.client}</div><div class="text-xs text-slate-500">${h.date} • ${h.items.length} Items</div></div>
+                    <div class="font-bold text-primary">₹${h.total.toFixed(2)}</div>
+                </div>`).join('');
+            } else {
+                const groups = {};
+                filtered.forEach(h => { const k = h.client+h.addr; if(!groups[k]) groups[k]={n:h.client, a:h.addr, b:[], t:0}; groups[k].b.push(h); groups[k].t+=h.total; });
+                div.innerHTML = Object.values(groups).map(g => `
+                <div class="bg-surface rounded-xl shadow-card border border-slate-100 overflow-hidden">
+                    <div class="p-3 bg-slate-50 flex justify-between items-center border-b border-slate-100">
+                        <div><div class="font-bold text-slate-800 text-sm">${g.n}</div><div class="text-[10px] text-slate-500">${g.a||''}</div></div>
+                        <div class="text-right"><div class="font-bold text-primary text-sm">₹${g.t.toFixed(2)}</div><div class="text-[10px] text-slate-500">${g.b.length} Bills</div></div>
+                    </div>
+                    <div class="divide-y divide-slate-50">${g.b.map(b => `<div onclick="loadHist(${b.id})" class="p-2 pl-4 flex justify-between hover:bg-slate-50 cursor-pointer"><span class="text-xs text-slate-600">#${b.id} - ${b.date}</span><span class="text-xs font-bold text-slate-700">₹${b.total.toFixed(2)}</span></div>`).join('')}</div>
+                </div>`).join('');
+            }
+        }
+
+        function toggleHist(v) {
+            document.getElementById('btn-h-all').className = v==='all' ? 'flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white shadow-sm text-primary' : 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-500 hover:bg-white/50';
+            document.getElementById('btn-h-club').className = v==='club' ? 'flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white shadow-sm text-primary' : 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-500 hover:bg-white/50';
+            renderHist();
+        }
+
+        function loadHist(id) {
+            const h = app.data.hist.find(x => x.id === id);
+            document.getElementById('inv-shop').innerText = app.data.sets.name;
+            document.getElementById('inv-addr').innerText = app.data.sets.addr;
+            document.getElementById('inv-id').innerText = h.id;
+            document.getElementById('inv-date').innerText = h.date;
+            document.getElementById('inv-client').innerText = h.client;
+            document.getElementById('inv-client-addr').innerText = h.addr;
+            document.getElementById('inv-body').innerHTML = h.items.map(c => `<tr><td class="py-2"><div class="font-bold text-slate-700">${c.name}</div></td><td class="text-center py-2 text-slate-600">${c.qty}</td><td class="text-right py-2 text-slate-600">${c.price}</td><td class="text-right py-2 font-bold text-slate-800">${(c.price*c.qty).toFixed(2)}</td></tr>`).join('');
+            document.getElementById('inv-total').innerText = h.total.toFixed(2);
+            document.getElementById('inv-note').innerText = app.data.sets.note;
+            document.getElementById('inv-sign').innerHTML = app.data.sets.sign ? `<img src="${app.data.sets.sign}" class="h-full object-contain">` : '';
+            
+            document.getElementById('preview-modal').classList.remove('hidden');
+            document.getElementById('inv-actions-new').classList.add('hidden');
+            document.getElementById('inv-actions-hist').classList.remove('hidden');
+        }
+
+        function renderAnalytics() {
+            let rev=0, cost=0, asset=0, pot=0;
+            app.data.hist.forEach(h => h.items.forEach(i => { rev+=i.price*i.qty; cost+=(i.cost||0)*i.qty; }));
+            app.data.inv.forEach(i => { asset+=(i.cost||0)*i.stock; pot+=i.price*i.stock; });
+            const prof = rev-cost; const mar = rev>0?((prof/rev)*100).toFixed(1):0;
+            document.getElementById('an-rev').innerText='₹'+rev.toLocaleString(); document.getElementById('an-cost').innerText='₹'+cost.toLocaleString();
+            document.getElementById('an-profit').innerText='₹'+prof.toLocaleString(); document.getElementById('an-margin').innerText=mar+'%';
+            document.getElementById('an-asset').innerText='₹'+asset.toLocaleString(); document.getElementById('an-pot').innerText='₹'+pot.toLocaleString();
+        }
+
+        // --- SETTINGS ---
+        function updateSettingsUI() {
+            const m = document.getElementById('tog-man'); const b = document.getElementById('manual-btn-area');
+            m.className = app.data.sets.showMan ? "w-11 h-6 bg-primary rounded-full relative cursor-pointer transition-colors" : "w-11 h-6 bg-slate-300 rounded-full relative cursor-pointer transition-colors";
+            m.firstElementChild.className = app.data.sets.showMan ? "w-4 h-4 bg-white rounded-full absolute top-1 right-1 transition-all shadow-sm" : "w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-all shadow-sm";
+            b.style.display = app.data.sets.showMan ? 'block' : 'none';
+            document.getElementById('sidebar-shop').innerText = app.data.sets.name;
+        }
+
+        function toggleManualBtn() { app.data.sets.showMan = !app.data.sets.showMan; save(); updateSettingsUI(); }
+        function editShopDetails() { Swal.fire({ title:'Details', html:`<input id="s-n" class="swal2-input" value="${app.data.sets.name}"><textarea id="s-a" class="swal2-textarea">${app.data.sets.addr}</textarea>`, preConfirm:()=>{return{name:document.getElementById('s-n').value, addr:document.getElementById('s-a').value}}}).then(r=>{if(r.isConfirmed){Object.assign(app.data.sets, r.value); save(); updateSettingsUI();}}); }
+        function openSignature() { Swal.fire({ title:'Signature', html:`<canvas id="cvs" width="300" height="150" class="border rounded bg-slate-50"></canvas><div class="text-right mt-2"><button onclick="clsCvs()" class="text-xs text-red-500 font-bold">Clear</button></div>`, didOpen:initCvs, preConfirm:()=>document.getElementById('cvs').toDataURL()}).then(r=>{if(r.isConfirmed){app.data.sets.sign=r.value;save();}}); }
+        function initCvs() { const c=document.getElementById('cvs'), x=c.getContext('2d'); let d=false; 
+            const getPos=(e)=>{const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}};
+            const dr=(e)=>{if(!d)return;e.preventDefault();const p=getPos(e);x.lineTo(p.x,p.y);x.stroke();};
+            const st=(e)=>{e.preventDefault();d=true;x.beginPath();const p=getPos(e);x.moveTo(p.x,p.y);};
+            c.addEventListener('mousedown',st); c.addEventListener('mousemove',dr); window.addEventListener('mouseup',()=>d=false);
+            c.addEventListener('touchstart',st); c.addEventListener('touchmove',dr); window.addEventListener('touchend',()=>d=false);
+            window.clsCvs=()=>x.clearRect(0,0,300,150);
+        }
+        function startTour() {
+            Swal.fire({ title:'Welcome!', text:'Manage Inventory, Create Bills, Track Profits.', icon:'info', confirmButtonText:'Let\'s Go' }).then(()=>{ app.data.sets.tourDone=true; save(); });
+        }
+        function resetApp() { Swal.fire({title:'Reset?', icon:'warning', showCancelButton:true, confirmButtonColor:'#ef4444'}).then(r=>{if(r.isConfirmed){localStorage.clear(); location.reload();}})}
+        function toast(m) { const t=Swal.mixin({toast:true, position:'bottom-end', showConfirmButton:false, timer:1500}); t.fire({icon:'success', title:m}); }
+    </script>
 </body>
-
 </html>
-
-
